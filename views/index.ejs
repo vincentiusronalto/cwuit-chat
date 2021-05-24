@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/main.css">
+
+
+    <title>Document</title>
+</head>
+
+
+<body>
+    <div id="wrapper_all">
+
+        <div id="wrapper_inside">
+        
+            <div id="right_content">
+                <!-- LOGIN -->
+                <div class="single_content hide" data-link="login">
+                    <div id="auth_ejs_wrapper">
+                        <div id="auth_ejs">
+                                <div>
+                                    <h1 class="auth_ejs_title">Join cwuit.com and start chatting with us</h1>
+                                </div>
+                                <!-- <span class="close">&times;</span> -->
+                                <div id="auth_info_link_wrapper">   
+                                    <div class="auth_info_show"></div>
+                                    <div id="auth_link_to_other">    
+                                            <div id="auth_link_login"     data-content="login_wrapper" class="auth_single_link auth_link_active">Login</div>
+                                            <div>|</div>
+                                            <div id="auth_link_signup"    data-content="signup_wrapper" class="auth_single_link">Sign Up</div>
+                                            <div>|</div>
+                                            <div id="auth_link_passreset" data-content="forgot_pass_wrapper" class="auth_single_link">Reset Password</div>
+                                    </div>
+                                </div>
+                                    
+                
+                                <div id="login_signup_action">
+                                                    
+                                    <input id="auth_csrf_val" type="hidden" name="_csrf" value="<%= csrf %>" />  
+                                    <div id="login_wrapper" class="auth_single_wrapper auth_single_active">
+                                            <input class="auth_input" type="text" id="input_login_uname_email" placeholder="Username/Email">
+                                            <input class="auth_input" type="password" id="input_login_pass" placeholder="Password">
+                                        <div id="login_btn" class="auth_submit_btn">Login</div>
+                                    </div>
+                        
+                                    <div id="signup_wrapper" class="auth_single_wrapper">
+                                            <input class="auth_input" type="text" id="input_signup_uname" placeholder="Username">
+                                            <input class="auth_input" type="text" id="input_signup_email" placeholder="Email">
+                                            <input class="auth_input" type="password" id="input_signup_pass" placeholder="Password">  
+                                        <div id="signup_btn"  class="auth_submit_btn">Sign up</div>
+                                    </div>
+                        
+                                    <div id="forgot_pass_wrapper" class="auth_single_wrapper">
+                                        <input class="auth_input" type="text" id="input_fpass_uname_email" placeholder="Username/Email">
+                                        <div id="fpass_btn" class="auth_submit_btn">Reset Password</div>      
+                                    </div>
+                
+                                </div>
+
+                                <div>
+                                    <a href="/chat">Let me check the app first...</a>
+                                </div>
+                        </div>
+                        <div id="auth_confirm">
+                
+                        </div>
+                        </div>
+                </div>
+
+
+                <!-- chat -->
+                <div class="single_content hide" data-link="chat">
+                    <div id="chat_topic">   
+
+                        
+                        <div id="chat_topic_selection">
+                            <div id="chat_all" class="chat_selector_single chat_selector_single_active">
+                                <img src="/test/profile_all.png" class="profile_pic_small">
+                                <div class="chat_selector_content">
+                                    <div>All</div>
+                                    <div class="chat_selector_history_chat">Ethan : nice view</div>
+                                </div>
+                            </div>
+    
+                            <div id="chat_private_wrapper">
+                                <div class="chat_selector_single">
+                                    <img src="/test/profile_test.png" class="profile_pic_small">
+                                    <div class="chat_selector_content">
+                                        <div><span class="material-icons icon-female">female</span>Natalia</div>
+                                        <div class="chat_selector_history_chat">Natalia : me too</div>
+                                    </div>
+                                </div>
+                                <div class="chat_selector_single">
+                                    <img src="/test/profile_test.png" class="profile_pic_small">
+                                    <div class="chat_selector_content">
+                                        <div><span class="material-icons icon-female">female</span>Jane</div>
+                                        <div class="chat_selector_history_chat">You : r u okay?</div>
+                                    </div>
+                                </div>
+                                <div class="chat_selector_single">
+                                    <img src="/test/profile_test.png" class="profile_pic_small">
+                                    <div class="chat_selector_content">
+                                        <div><span class="material-icons icon-female">female</span>Vivo</div>
+                                        <div class="chat_selector_history_chat">Vivo : Hmm..</div>
+                                    </div>
+                                </div>
+                                <div class="chat_selector_single">
+                                    <img src="/test/profile_test.png" class="profile_pic_small">
+                                    <div class="chat_selector_content">
+                                        <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                        <div class="chat_selector_history_chat">You : not bad</div>
+                                    </div>
+                                </div>
+                                <div class="chat_selector_single">
+                                    <img src="/test/profile_test.png" class="profile_pic_small">
+                                    <div class="chat_selector_content">
+                                        <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                        <div class="chat_selector_history_chat">You : not bad</div>
+                                    </div>
+                                </div>
+                                <div class="chat_selector_single">
+                                    <img src="/test/profile_test.png" class="profile_pic_small">
+                                    <div class="chat_selector_content">
+                                        <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                        <div class="chat_selector_history_chat">You : not bad</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <!-- Banner Ad 1 -->
+                        <div id="banner_ad_1">
+                            <div>
+                                Banner Ad 1
+                            </div>
+                            
+                        </div>
+                        
+                        
+                    </div>
+
+                    <div id="profile_right_wrapper">
+                        <div id="profile_right_inside">
+                            <img src="/test/profile_test.png" class="profile_pic_big">
+                            <div><span class="material-icons icon-female">female</span>Roxy</div>
+                            <mention>@Roxy</mention>
+                            <div>
+                                <div>Bio</div>
+                                <div>Im Perfect :)</div>
+                            </div>
+                            <div>
+                                <div>Follow</div>
+                            </div>
+                            <div>
+                                <div>Instagram</div> 
+                                <div>@Roxy</div>
+                            </div>
+                            <div>
+                                <div>Website</div> 
+                                <div>???</div>
+                            </div>
+                            <div>
+                                <div>Country</div> 
+                                <div>???</div>
+                            </div>
+                        </div>
+                        
+
+                        <!-- Banner Ad 2 -->
+                        <div id="banner_ad_1">
+                            <div>
+                                Banner Ad 2
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                    <div id="chat_top_header">
+                        <div id="">
+                            <mention>@Natalia</mention>
+                        </div>
+
+                        <%if (locals.ifLogin == false) { %>
+                            <div id="sign_btn">
+                                Login to chat
+                            </div>
+                            <% } else { %>
+                                <div id="my_profile_top_right">
+                                    My Profile
+                                </div>
+                            <% } %>
+                      
+                        
+                    </div>
+                    <div id="chat_room_output">
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        <div class="chat_selector_single">
+                            <img src="/test/profile_test.png" class="profile_pic_small">
+                            <div class="chat_selector_content">
+                                <div><span class="material-icons icon-female">female</span>Roxy</div>
+                                <div class="chat_selector_history_chat">lol lolol</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="chat_preview_images"></div>
+                    <div id="chat_room_input">
+                        <label id="chat_image_selector" for="chat_hidden_input_file"><div class="chat_add_photo_btn material-icons">add_a_photo</div></label>
+                        <input id="chat_hidden_input_file" type="file"  accept="image/png, image/jpeg" multiple>
+                        <div id="chat_room_input_box" class="contenteditable" contenteditable="true" data-placeholder="Chat here..."></div>  
+                        <div id="chat_room_send_btn">Send</div>
+                    </div>
+                </div>
+                <div class="single_content hide" data-link="help">
+                    Profile
+                </div>
+                <div class="single_content hide" data-link="help">
+                    Help
+                </div>
+
+                <div class="single_content hide" data-link="ads">
+                    Ads
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+    
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+
+</html>
