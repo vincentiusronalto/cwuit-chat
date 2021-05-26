@@ -40,7 +40,7 @@ app.use(express.static('public'));
 // ROUTES
 
 // app.use(require('./routes/routes_app'));
-// app.use(require('./routes/routes_login'));
+app.use(require('./routes/routes_login'));
 // app.use(require('./routes/routes_main'));
 app.use(require('./routes/routes_new'));
 

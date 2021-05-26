@@ -49,7 +49,7 @@ router.post("/auth_login",async function(req,res,next){
         const dbGetUsername = await db.query('SELECT email, username, id, password, email_verified FROM users WHERE username = $1', [username_email]);
 
         //check if email exist
-        const dbGetEmail = await db.query('SELECT email, username, id, password, email_verified FROM users WHERE email = $1', [username_email]);
+        const dbGetEmail    = await db.query('SELECT email, username, id, password, email_verified FROM users WHERE email = $1', [username_email]);
         
         let userEmail, userName, userId,userPassword,userActive;
         let userExist = false;
@@ -79,16 +79,11 @@ router.post("/auth_login",async function(req,res,next){
             if(checkPassword){
                 
                 //true password
-                //if active -> set session, if not active -> set to verification
-                //if password right -> enter login
-                // req.session.user = {
-                //     id: userId
-                // }
-                req.session.userid = userId;
+                req.session.uid = userId;
                 req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
                 req.session.justlogin = 'y';
                 // FIRST LOGIN ATTEMPT
-                const dbUpdateStatusLogin = await db.query('UPDATE users SET status_is_online = 1 WHERE id = $1', [userId]);
+                // const dbUpdateStatusLogin = await db.query('UPDATE users SET status_is_online = 1 WHERE id = $1', [userId]);
                 
                 if(userActive == 1){
                     
@@ -100,12 +95,7 @@ router.post("/auth_login",async function(req,res,next){
                         note:'active'
                     })
                 }else{
-                    // req.session.needverification = true;
-                    // req.session.needverificationEmail = userEmail;
-                    // req.session.needverificationuid = userId;
-                    // req.session.needverificationuname = userName;
-                    // res.redirect('/needverification');
-
+                    
                     res.send({
                         success  : true,
                         type:'login',
@@ -115,11 +105,6 @@ router.post("/auth_login",async function(req,res,next){
             }else{
     
                 //wrong password
-                // loginErrExist = true;
-                // loginErr = 'wrong password';
-                // req.session.loginErrExist = loginErrExist;
-                // req.session.loginErr = loginErr;
-                // res.redirect('/login');
 
                 res.send({
                     success  : false,
@@ -132,15 +117,9 @@ router.post("/auth_login",async function(req,res,next){
         }else{
             //username/email not exist
             //send back to login, tell username/email not exist 
-
-            // loginErrExist = true;
-            // loginErr      = 'wrong username/email';
-            // req.session.loginErrExist = loginErrExist;
-            // req.session.loginErr = loginErr;
-            // res.redirect('/login');
-
+            console.log('failed login')
             res.send({
-                success:false,
+                success: false,
                 type:'login',
                 note:'wrong_username/email/password'
             })
@@ -241,32 +220,61 @@ router.post("/auth_register", async function(req,res,next){
            
             //Start save to db
             //bcrypt pass
-           
+
+            /*
+
+            CREATE TABLE users (
+            id BIGSERIAL PRIMARY KEY,
+            name text,
+            username text,
+            info_instagram text,
+            info_website text,
+            info_bio text,
+            info_facebook text,
+            info_twitter text,
+            info_country text,
+            date_created timestamp with time zone,
+            photo text,
+            info_gender text,
+            authority text,
+            password text,
+            email text,
+            date_deleted timestamp with time zone,
+            email_verified integer
+            );
+            */
             const hashPassword = await bcrypt.hash(password,saltRounds);
-            const dbSaveUsers  = await db.query(`
-            INSERT INTO users
-            (username,email,password,
-            name, date_created, 
-            status_is_online, 
-            status_last_online, 
-            email_verified, photo, 
-            role, gems, verified, theme, exist, membership) 
-            VALUES($1,$2,$3,$1,NOW(), '0',NOW(),'0','profileempty.png','3','0','0','night','1','Member') 
-            RETURNING id`, [username,email,hashPassword]);
-            const user_id = dbSaveUsers.rows[0].id;
+            let saveUserSql = 
+            `INSERT INTO users 
+            (date_created, password, name, username, photo, email, authority)
+            VALUES (NOW(), $1, $2, $2, $3, $4, $5) RETURNING id`
+            let dbSaveNewUser = await db.query(saveUserSql,[hashPassword,username, photo, email, authority])
+           
+            
+            // const dbSaveUsers  = await db.query(`
+            // INSERT INTO users
+            // (username,email,password,
+            // name, date_created, 
+            // status_is_online, 
+            // status_last_online, 
+            // email_verified, photo, 
+            // role, gems, verified, theme, exist, membership) 
+            // VALUES($1,$2,$3,$1,NOW(), '0',NOW(),'0','profileempty.png','3','0','0','night','1','Member') 
+            // RETURNING id`, [username,email,hashPassword]);
+            // const user_id = dbSaveUsers.rows[0].id;
     
-            //make additional info
-            const dbInsertAdditional = await db.query(`
-            INSERT INTO users_info 
-            (uid, instagram, facebook, twitter, 
-            youtube, hobby, website, country, about_me,last_edit) 
-            VALUES ($1,'','','','','','','','',NOW()) RETURNING id`,[user_id]);  
+            // //make additional info
+            // const dbInsertAdditional = await db.query(`
+            // INSERT INTO users_info 
+            // (uid, instagram, facebook, twitter, 
+            // youtube, hobby, website, country, about_me,last_edit) 
+            // VALUES ($1,'','','','','','','','',NOW()) RETURNING id`,[user_id]);  
             
             
                 
             //Redirect to verification & Send Email Activation
             //VERIFICATION PROCESS//PREPARE DATA FOR EMAIL ACTIVATION
-            
+            let user_id = dbSaveUser.rows[0].id;
             let emailTo = formdata.email;
             let tokenResult = tokenMaker();
             let {token_hash,token_check,token} = tokenResult; 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <title>Login to chatting room</title>
+</head>
+
+
+<body>
+
+<!-- LOGIN -->
+<link rel="stylesheet" href="/css/auth.css">
+
+    <div id="auth_ejs_wrapper">
+        <div id="auth_ejs">
+                <div>
+                    <h1>cwuit.com</h2>
+                    <h2 >Online Chat Room</h1>
+                
+                </div>
+                <!-- <span class="close">&times;</span> -->
+                
+                    
+
+                <div id="login_signup_action">
+                                    
+                    <input id="auth_csrf_val" type="hidden" name="_csrf" value="<%= csrf %>" />  
+                    <div id="login_wrapper" class="auth_single_wrapper auth_single_active">
+                            <input class="auth_input" type="text" id="input_login_uname_email" placeholder="Username/Email">
+                            <input class="auth_input" type="password" id="input_login_pass" placeholder="Password">
+                        <div id="login_btn" class="auth_submit_btn">Login</div>
+                    </div>
+        
+                    <div id="signup_wrapper" class="auth_single_wrapper">
+                            <input class="auth_input" type="text" id="input_signup_uname" placeholder="Username">
+                            <input class="auth_input" type="text" id="input_signup_email" placeholder="Email">
+                            <input class="auth_input" type="password" id="input_signup_pass" placeholder="Password">  
+                        <div id="signup_btn"  class="auth_submit_btn">Sign up</div>
+                    </div>
+        
+                    <div id="forgot_pass_wrapper" class="auth_single_wrapper">
+                        <input class="auth_input" type="text" id="input_fpass_uname_email" placeholder="Username/Email">
+                        <div id="fpass_btn" class="auth_submit_btn">Reset Password</div>      
+                    </div>
+
+                </div>
+
+                <div id="auth_info_link_wrapper">   
+                    <div class="auth_info_show"></div>
+                    <div id="auth_link_to_other">    
+                            <div id="auth_link_login"     data-content="login_wrapper" class="auth_single_link auth_link_active">Login</div>
+                            <div>|</div>
+                            <div id="auth_link_signup"    data-content="signup_wrapper" class="auth_single_link">Sign Up</div>
+                            <div>|</div>
+                            <div id="auth_link_passreset" data-content="forgot_pass_wrapper" class="auth_single_link">Reset Password</div>
+                    </div>
+                </div>
+                
+
+                <div>
+                    <a href="/chat">Check App as Guest</a>
+                </div>
+                <div id="auth_confirm">
+                </div>
+
+                
+        </div>
+        
+        </div>
+
+
+<script src="/js/auth.js"></script>
+
+</body>
+
+</html>

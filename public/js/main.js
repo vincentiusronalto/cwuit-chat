@@ -28,9 +28,30 @@
     showContentFirst(linkName)
 
     document.addEventListener('click', function(e){
-        if(event.target.closest('.single_nav')){
+        if(e.target.closest('#sign_btn')){
+            console.log('sign in')
+        }
+
+        else if(e.target.closest('.single_nav')){
             let link = e.target.getAttribute('data-link');
             
             showContentClick(link)
+        }
+
+        else if(e.target.closest('#chat_room_input')){
+            // chat_room_input_box
+            window.location.href = "/login";
+
+            // window.location('/login')
+        }
+        else if(e.target.closest('mention')){
+            
+        }
+
+        else if(e.target.closest('#left_icon_display')){
+            document.getElementById('chat_topic').classList.toggle('hide')
+        }
+        else if(e.target.closest('#right_icon_display')){   
+            document.getElementById('profile_right_wrapper').classList.toggle('hide')
         }
     });

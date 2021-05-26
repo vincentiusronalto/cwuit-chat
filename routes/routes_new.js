@@ -26,7 +26,7 @@ router.get("/", async function(req,res,next){
 
 });
 router.get("/login", async function(req,res,next){
-    res.render('index',{link:'login', csrf:req.csrfToken()});
+    res.render('login',{link:'login', csrf:req.csrfToken()});
 });
 router.get("/chat", async function(req,res,next){
     res.render('index',{link:'chat', csrf:req.csrfToken()});

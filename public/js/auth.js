@@ -25,33 +25,11 @@
           xhttp.onreadystatechange = function() {
               if (this.readyState == 4 && this.status == 200) {
                   console.log(this.responseText);
-                /*
-                type = login
-                type = signup
-                */
-    
-                // if(this.responseText == "success"){
-                    //thanks
-                    // window.location.href = "/password_reset_ok";
-                    
-                // }  
-                // else if(this.responseText == "failed"){
-                    // document.getElementById("err_reset_pass").classList.remove("hidden_div");
-                    //hide error again
-                    // setTimeout(function(){ 
-                        // document.getElementById("err_reset_pass").classList.add("hidden_div");
-                    // }, 3000);
-    
-                // }
+              
                 let data = JSON.parse(this.responseText);
                 let type = data.type;
                
-                if(type == 'passreset'){
-    
-                }
-    
                 if(type == 'login'){
-                    
                     let success = data.success;
                     let note = '';
                     if(success){
@@ -59,17 +37,12 @@
                     }else{
                         note = `Wrong email/username or password`;
                     }
-    
-                    document.getElementById('auth_ejs').style.display = 'none';
-    
                     document.getElementById('auth_confirm').innerHTML = note;
-    
                     document.getElementById('auth_confirm').style.display = 'block';
-    
-                    setTimeout(function(){location.reload()},500);
+                    loginBtn.innerHTML = 'Login';
                 }
     
-                if(type == 'signup'){
+                else if(type == 'signup'){
                     let email = data.email;
                     let username = data.username;
                     let success = data.success;
@@ -81,15 +54,12 @@
                             note += `<div>${errArr[i]}</div>`;
                         }
                     }
-                    
-                    document.getElementById('auth_ejs').style.display = 'none';
-    
                     document.getElementById('auth_confirm').innerHTML = note;
-    
                     document.getElementById('auth_confirm').style.display = 'block';
+                }
+
+                else if(type == 'passreset'){
     
-                    setTimeout(function(){location.reload()},500);
-                    
                 }
               }
           };
@@ -126,6 +96,8 @@
         let password      = document.getElementById('input_login_pass').value;
         let sendString    = `uname_email=${usernameEmail}&password=${password}`;
         let destination   = 'auth_login';
+        loginBtn.innerHTML = 'Please Wait...';
+        
         // console.log(sendString, destination, csrfVal);
         sendAuthPost(sendString,destination,csrfVal);
     });
@@ -149,18 +121,7 @@
         console.log(sendString, destination, csrfVal);
         // sendAuthPost(sendString, destination, csrfVal);
     });
-    
-    var btn = document.getElementById("sign_in_btn");
-    btn.onclick = function() {
-        modal.style.display = "block";
-      }
-      
-    var modal = document.getElementById("auth_ejs_wrapper");
-    window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      }
+
     
     
     
