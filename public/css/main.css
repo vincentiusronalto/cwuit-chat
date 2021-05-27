@@ -1,9 +1,8 @@
     a{
         text-decoration: none;
+        color: black;
     }
-    .hide{
-        display: none;
-    }
+    
     .material-icons{
         cursor: pointer;
     }
@@ -11,6 +10,37 @@
         /* color: #18dcff; */
         /* color: #7d5fff; */
         color: #54a0ff;
+    }
+    #illustration_wrapper{
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        flex-direction: column;
+    }
+    h1{
+        font-size: 20px;    
+        font-weight: 100;
+
+    }
+    h2{
+        font-size: 18px;
+        font-weight: 100;
+    }
+    #illustration_chat{
+        width: 300px;
+        margin: 0 auto;
+        text-align: center;
+        display: block;
+    }
+
+    #illustration_loading{
+        padding: 10px;
+        width: 300px;
+        margin: 0 auto;
+        text-align: center;
+        display: block;
     }
     html,body{
 
@@ -36,9 +66,7 @@
     }
 
     #wrapper_inside{
-        height: 400px;
-        /* width: 500px; */
-        
+        height: 90vh;
         background-color: white;
         display: flex;
         flex-direction: column;
@@ -46,8 +74,7 @@
 
     #top_nav{
         display: flex;
-        flex-direction: row;
-        
+        flex-direction: row;    
     }
 
     .single_nav{
@@ -87,6 +114,24 @@
         width: 500px;
     }
 
+    .chat_image_inside{
+        margin-top: 10px;
+        width: 200px;
+        object-fit: contain;
+    }
+
+    .chat_content_single{
+        font-size: 16px;
+        display: flex;
+        padding: 10px;
+        align-items: flex-start;
+        border-bottom: 1px solid rgb(235,235,235);
+    }
+
+    .chat_content_content{
+        padding-left: 10px;
+    }
+
     /* UTILITY */
 
     .icon-female{
@@ -94,8 +139,25 @@
     
     font-size: 14px;
     color: #ff6b81;
+        
+    transform: translate(-1px, -2px);
+    }
+
+    .icon-male{
+        vertical-align: middle;
+    
+    font-size: 14px;
+    color: #6bb5ff;
     
     transform: translate(-1px, -2px);
+    }
+
+    #profile_photo_small_right{
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 1px solid blue;
+        vertical-align: middle;
     }
 
     .profile_pic_small{
@@ -103,6 +165,8 @@
         height: 40px;
         border-radius: 50%;
     }
+
+
 
     .profile_pic_big{
         width: 100px;
@@ -125,6 +189,10 @@
         padding: 5px;
         align-items: center;
         border-bottom: 1px solid rgb(235,235,235);
+        cursor: pointer;
+    }
+    .chat_selector_single:hover{
+        background: rgb(243,243,243);
     }
 
     .chat_selector_single_active{
@@ -133,35 +201,37 @@
     }
 
     #chat_topic{
-        /* position: absolute; */
-        width: 200px;
-        height: 400px;
-        left: -200px;
+        
+        width: 250px;
+        
         background: white;
-        /* overflow-y: auto; */
+        display: flex;
+        flex-direction: column ;
+    
         border-right: 1px solid rgb(235,235,235);
     }
 
     #chat_topic_selection{
         overflow-y: auto;
-        height: 300px;
+    
+        flex-grow: 1;
     }
 
     #profile_right_wrapper{
-        /* position: absolute; */
-    width: 200px;
-    height: 400px;
-    right: -200px;
+    width: 250px;
     background: white;
     text-align: center;
+    display: flex;
+    flex-direction: column;
     border-left: 1px solid rgb(235,235,235);
     }
 
     #profile_right_inside{
         padding: 10px;
-        height: 300px;
+        /* height: 300px; */
         overflow-y: auto;
         box-sizing: border-box;
+        flex-grow: 1;
     }
 
     .chat_selector_content{
@@ -190,8 +260,9 @@
         display: flex;
         padding: 10px;
         background: rgb(243,243,243);
-        color: white;
+        color: black;
         align-items: center;
+        border-bottom: 1px solid rgb(235,235,235);
     }
 
     #left_icon_display{
@@ -257,13 +328,55 @@
     cursor: pointer;
 }
 
+/* CHAT PREVIEW */
+#chat_preview_images{
+    background: rgb(243,243,243);
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+    display: flex;
+}
+.chat_preview_image_single_wrapper{
+    position: relative;
+    display: inline-block;
+}
+.chat_preview_image_single{
+    height: 50px;
+    padding: 10px;
+    width: auto;
+}
+.chat_preview_close_image{
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    right: 0px;
+    background: rgb(0,0,0,0.8);
+}
+
+/* PROFILE */
+
+.profile_single_wrapper{
+    display: flex;
+    justify-content: center;
+}
+.profile_icon{
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
 
 /* BANNER */
 #banner_ad_1, #banner_ad_2{
     
-    height: 100px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-top: 1px solid rgb(235,235,235);
+}
+
+
+.hide{
+    display: none !important;
 }

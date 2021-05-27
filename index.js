@@ -7,13 +7,16 @@ require('dotenv').config();
 
 //csurf-cookie-bodyparser
 const cookieParser = require('cookie-parser')
-const bodyParser = require('body-parser')
-const csrf = require('csurf')
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+const csrf = require('csurf')
+// const bodyParser = require('body-parser')
+//https://stackoverflow.com/questions/24330014/bodyparser-is-deprecated-express-4
+// app.use(bodyParser.urlencoded({extended: false}));
+// app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cookieParser());
-app.use(csrf({ cookie: true }))
+app.use(csrf({ cookie: true, httpOnly : true, secure: true}))
 
 //csurf-cookie-bodyparser
 let localIP = '192.168.100.4';
@@ -33,9 +36,7 @@ const session = Session({
 
 app.use(session)
 
-// VIEWS
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
+
 
 // ROUTES
 
@@ -44,6 +45,9 @@ app.use(require('./routes/routes_login'));
 // app.use(require('./routes/routes_main'));
 app.use(require('./routes/routes_new'));
 
+// VIEWS
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 const server = require('http').Server(app);
 
@@ -58,4 +62,4 @@ server.listen('3000', 'localhost',() => {
 
 
 
-require('./socket/listener')(server,session);
+require('./socket/listener_new')(server,session);
