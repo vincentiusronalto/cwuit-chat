@@ -1,4 +1,46 @@
     let socket = io();
+    let MY_NAME = document.getElementById('MY_NAME').value;
+    let MY_USERNAME = document.getElementById('MY_USERNAME').value;
+    let MY_ID = document.getElementById('MY_ID').value;
+    let MY_PHOTO = document.getElementById('MY_PHOTO').value;
+    let MY_GEN = document.getElementById('MY_GEN').value;
+    let MY_BIO = document.getElementById('MY_BIO').value;
+    let MY_WEB = document.getElementById('MY_WEB').value;
+    let MY_IG = document.getElementById('MY_IG').value;
+    let MY_FB = document.getElementById('MY_FB').value;
+    let MY_TW = document.getElementById('MY_TW').value;
+    let MY_CTY = document.getElementById('MY_CTY').value;
+
+    let MY_DATE = document.getElementById('MY_DATE').value;
+
+    
+    function initProfile(){
+
+    }
+
+    function G_dateFormat(dateInput){
+        //format 1
+        //2020-01-21 03:44:21
+        //year-month-date hours:minute:second
+        // let dInputObj = new Date();
+      
+        //format2 
+        //July 4, 2020
+        let isoDate = new Date(dateInput).toISOString();
+        let dInputObj = new Date(isoDate);
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let year = ""+dInputObj.getFullYear();
+        // let month = ""+(dInputObj.getMonth() + 1);
+        let month = months[dInputObj.getMonth()]
+        let monthN = dInputObj.getMonth() + 1;
+        let date = ""+dInputObj.getDate();
+        let hour = ""+dInputObj.getHours();
+        let minute = ""+dInputObj.getMinutes();
+        let sec = ""+dInputObj.getSeconds();
+    
+        let format = `${month}, ${date} ${year}`
+        return format;
+    }
 
     function showContentFirst(link){
         if(!link){
@@ -57,6 +99,7 @@
             
             
             let data = {type:dataType,id:dataId};
+            document.getElementById('chat_room_input').classList.remove('hide')
             socket.emit('chat_load',data)
         }
 
@@ -81,7 +124,7 @@
 
     socket.emit('user_load');
     socket.on('user_load',function(data){
-        console.log(data)
+        //console.log(data)
         /*
         {
         "topic": [
@@ -123,7 +166,7 @@
             <div class="chat_selector_single" data-type="topic" data-id="${data.topic[i].id}">
                 <img src="/upload/topic_pic/${data.topic[i].image}" class="profile_pic_small">
                 <div class="chat_selector_content">
-                    <div>All</div>
+                    <div>${data.topic[i].name}</div>
                     <div class="chat_selector_history_chat">${data.topic[i].lastchat.name} : ${data.topic[i].lastchat.text}</div>
                 </div>
             </div>
@@ -152,7 +195,7 @@
     })
 
     socket.on('chat_load', function(data){
-        console.log(data)
+        //console.log(data)
         /*
 
                 {
@@ -226,7 +269,7 @@
             }
             if(imageMaker.length > 0){
                 for(let j=0; j < imageMaker.length ; j++){
-                    imageBuild += `<img src="/upload/${imageFolder}/${imageMaker[j]}" class="chat_image_inside">`
+                    imageBuild += `<img src="/upload/${imageFolder}/${imageMaker[j]}" class="chat_image_inside" alt="image">`
                 }
             }
 
@@ -240,11 +283,20 @@
                     <div class="chat_selector_history_chat">${data.chat[i].text}</div>
                     <div>${imageBuild}</div>
                 </div>
+                <div class="chat_date_data"><div>${moment(data.chat[i].date_created).fromNow()}</div></div> 
             </div>`
         }
         document.getElementById('info_which_chat').innerHTML = info;
         // console.log(data);
         document.getElementById('chat_room_output').innerHTML = chatbuild;
+        let output = document.getElementById('chat_room_output');
+
+            output.style.opacity = "0";
+        
+            setTimeout(function(){
+                output.scrollTop = output.scrollHeight;
+                output.style.opacity = "1";
+            },'300')
     });
 
 
@@ -363,22 +415,33 @@
             let picArr = data.img;
             
             for(let j = 0; j < picArr.length; j++){
-                pic += `<img src="${picArr[j]}" class="chat_single_pic" alt="chat_image">`;
+                pic += `<img src="${picArr[j]}" class="chat_image_inside" alt="chat_image">`;
             }
         }
     
+        // let chat = 
+        // `
+        // <div class="chat_room_single" data-checkId="${data.checkId}" data-chatId="">
+        //         <img src="/upload/user/${MY_PHOTO}" class="chat_room_pp" alt="chat_profile_picture">
+        //         <div class="chat_room_single_content ${balloon}">
+        //             <div class="chat_room_data ${cdata}">${MY_USERNAME}</div>
+        //             <div class="">${data.text}</div>
+        //             <div>${pic}</div> 
+        //             <div class="chat_date_data"><div>Sending</div></div>
+        //     </div>
+        // </div>
+        // `;
+
         let chat = 
-        `
-        <div class="chat_room_single" data-checkId="${data.checkId}" data-chatId="">
-                <img src="/upload/user/${myphoto}" class="chat_room_pp" alt="chat_profile_picture">
-                <div class="chat_room_single_content ${balloon}">
-                    <div class="chat_room_data ${cdata}">${myuname}</div>
-                    <div class="">${data.text}</div>
-                    <div>${pic}</div> 
-                    <div class="chat_date_data"><div>Sending</div></div>
+        `<div class="chat_content_single" data-checkId="${data.checkId}">
+            <img src="/upload/user/${MY_PHOTO}" class="profile_pic_small">
+            <div class="chat_content_content">
+                <div>${MY_NAME}</div>
+                <div class="chat_selector_history_chat">${data.text}</div>
+                <div>${pic}</div>
             </div>
-        </div>
-        `;
+            <div class="chat_date_data"><div>Sending</div></div> 
+        </div>`
     
         let output = document.getElementById('chat_room_output');
             output.innerHTML += chat;
@@ -430,10 +493,119 @@
     
             createChatSelf(chat_data);
             console.log(chat_data)
+            socket.emit('chat_send',chat_data);
             // G_socket.emit("chat_send_finish",chat_data);
         }
         
     }
+
+    socket.on('chat_send',function(data){
+
+    /*
+    cdate: "2021-05-07T15:46:54.684Z"
+    chatid: "8"
+    cpic: null
+    ctext: "yoiiii"
+    ctopicId: "1"
+    ctype: "daily"
+    uid: "3"
+    uname: "vronalto"
+    uphoto: "user.jpeg"
+    username: "vronalto"
+    */
+    //myid
+    // let chatActiveTopicId = '1';
+    // let chatActiveType = 'topic';
+
+    // let balloon;
+    // let cdata;
+
+    let chatActive = document.querySelector('.chat_selector_single_active');
+    //topicId 
+    let topicId = chatActive.getAttribute('data-id');
+    //type
+    let type = chatActive.getAttribute('data-type');
+
+    if(topicId == data.ctopicId && type == data.ctype){
+        if(data.uid == MY_ID){
+            // balloon = 'chat_room_balloon_gray';
+            // cdata = 'chat_data_gray';
+            // chat is mine - check checkId and correct Sending
+            // checkId : checkId,
+            // chatid : returnId,
+            // cdate : returnDate,
+
+            let checkChatId = document.querySelector(`.chat_content_single[data-checkId="${data.checkId}"]`);
+            checkChatId.setAttribute("data-chatId",data.chatid);
+
+            let checkChatDate = document.querySelector(`.chat_content_single[data-checkId="${data.checkId}"] .chat_date_data`);
+            checkChatDate.innerHTML = `<div>${moment(data.cdate).fromNow()}</div>`;
+        }
+
+        else
+        {
+        // balloon = 'chat_room_balloon_blue';
+        // cdata = 'chat_data_blue';
+            
+        
+        let pic = '';
+        
+        if(data.cpic){
+
+            let folder = '';
+            //check image folder
+            if(data.ctype == 'topic'){
+                folder = 'topic_chat';
+            }else if(data.ctype == 'private'){
+                folder = 'private_chat';
+            }
+
+            let picArr;
+            picArr = data.cpic.split("_");
+            for(let j = 0; j < picArr.length; j++){
+                pic += `
+                <img src="/upload/${folder}/${picArr[j]}" class="chat_image_inside" alt="image">
+                `
+            }
+            
+        }
+        // let dates = G_dateFormat(data.cdate);
+        let dates = moment(data.cdate).fromNow();
+        
+        // let chat = 
+        // `
+        // <div class="chat_room_single" data-chatId="${data.chatid}">
+        //     <img src="/upload/user/${data.uphoto}" class="chat_room_pp" alt="chat_profile_picture">
+        //     <div class="chat_room_single_content ${balloon}">
+        //         <div class="chat_room_data ${cdata}">${data.uname}</div>
+        //         <div class="">${data.ctext}</div>
+        //         <div>${pic}</div> 
+        //         <div class="chat_date_data"><div>${dates}</div></div>
+        //     </div>
+        // </div>        
+        // `;
+
+        let chat =
+        `<div class="chat_content_single" data-chatId="${data.chatid}">
+            <img src="/upload/user/${data.uphoto}" class="profile_pic_small">
+            <div class="chat_content_content">
+                <div>${data.uname}</div>
+                <div class="chat_selector_history_chat">${data.ctext}</div>
+                <div>${pic}</div>
+            </div>
+            <div class="chat_date_data"><div>${dates}</div></div> 
+        </div>`;
+
+
+        
+        let output = document.getElementById('chat_room_output');
+        output.innerHTML += chat;
+        
+        }
+        
+    }
+
+    });
 
     document.addEventListener('click',function(event){
         if(event.target.closest('#chat_room_send_btn')){

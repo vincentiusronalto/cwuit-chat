@@ -28,6 +28,12 @@
         font-size: 18px;
         font-weight: 100;
     }
+    #logo_right{
+        padding: 10px;
+        font-size: 20px;
+        font-family: 'Raleway';
+        border-bottom: 1px solid rgb(235,235,235);
+    }
     #illustration_chat{
         width: 300px;
         margin: 0 auto;
@@ -217,22 +223,7 @@
         flex-grow: 1;
     }
 
-    #profile_right_wrapper{
-    width: 250px;
-    background: white;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid rgb(235,235,235);
-    }
-
-    #profile_right_inside{
-        padding: 10px;
-        /* height: 300px; */
-        overflow-y: auto;
-        box-sizing: border-box;
-        flex-grow: 1;
-    }
+    
 
     .chat_selector_content{
         margin-left: 5px;
@@ -259,7 +250,6 @@
     #chat_top_header{
         display: flex;
         padding: 10px;
-        background: rgb(243,243,243);
         color: black;
         align-items: center;
         border-bottom: 1px solid rgb(235,235,235);
@@ -352,17 +342,60 @@
     right: 0px;
     background: rgb(0,0,0,0.8);
 }
+.chat_date_data{
+    font-size: 10px;
+    margin-top: 5px;
+    color: rgb(129,129,134);
+    margin-left: auto;
 
+}
 /* PROFILE */
+
+#profile_header{
+    padding: 10px;
+        font-size: 20px;
+        font-family: 'Raleway';
+        border-bottom: 1px solid rgb(235,235,235);
+}
+
+#profile_right_wrapper{
+    width: 250px;
+    background: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgb(235,235,235);
+    }
+
+    #profile_right_inside{
+        padding: 10px;
+        /* height: 300px; */
+        overflow-y: auto;
+        box-sizing: border-box;
+        flex-grow: 1;
+        font-family: 'Raleway';
+    }
 
 .profile_single_wrapper{
     display: flex;
     justify-content: center;
 }
+
+#profile_bio_wrapper{
+    color: gray;
+    font-family: 'Raleway';
+}
 .profile_icon{
     display: block;
     width: 20px;
     height: 20px;
+    margin-right: 10px;
+}
+#profile_social_media_wrapper{
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 

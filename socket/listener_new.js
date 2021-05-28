@@ -63,6 +63,58 @@ function cleanInput(dirty){
     return clean
 }
 
+async function uploadImage2(input, location){
+    try{
+
+    
+    console.log(input,location)
+    //single image upload , without old file name
+    
+    // (input);
+    //input : ['base64_1','base64_2',...] etc
+    let imageResult = '';
+  
+    if(input.length > 0){ 
+        
+        for(i = 0,j = input.length; i < j; i++){
+            //convert base64 to image
+            
+            let base64Str = input[i];
+            let uncompress_path = './public/upload/uncompressed/';
+            
+            //input:base64 and output:uncompresspath
+            // imageInfo : { imageType: 'jpeg', fileName: 'img-1571230468779.jpeg' }
+            let imageInfo = await base64ToImage(base64Str,uncompress_path); 
+  
+            let uncompress_path_start = uncompress_path+imageInfo.fileName;
+            let compress_output = './public/upload/'+location;
+  
+            //input:uncompresspath+filename and output public+location
+            let check = await compressImg(uncompress_path_start, compress_output);
+  
+            //delete uncompress image
+            let checkRemove = await removeFile(uncompress_path_start);
+  
+            
+            if(i == j-1){
+                imageResult += imageInfo.fileName + "";
+                
+            }else{
+                imageResult += imageInfo.fileName + "_";
+            }
+         }
+         
+    }else{
+        imageResult = null;
+    }
+    return imageResult;
+
+    
+    }catch(err){
+        (err);
+    }
+  }
+
 let onlineArr = [];
 let offlineArr = [];
 
@@ -239,9 +291,24 @@ module.exports = function(server,session){
         });
 
 
-        socket.on('chat_send', async function(){
+        socket.on('chat_send', async function(data){
             try{
-                if(!needLogin(uid)){                
+                //console.log(data)
+                /*
+                
+                {
+                    text: 'cry',
+                    img: [
+                        'data:image/png;base64,iVB...
+                    ],
+                    topicId: '1',
+                    type: 'topic',
+                    checkId: '162217784926916920'
+                }
+                
+
+                */
+                if(!needLogin(MYID)){                
                     io.to(socketId).emit('need_login', true);
                     return 0 
                 }
@@ -249,40 +316,47 @@ module.exports = function(server,session){
                 let checkId = data.checkId;
                 let nullVal = null;
                 let zero = '0';
-                let pic = await uploadImage2(data.img,'chat');
-                if(data.type == 'lang'){
+                let pic = '';
+                // if(data.type == 'lang'){
                     
-                    let sql = `INSERT INTO chat_data_language (sender_id, text, youtube, date_created, topic_id, picture, check_id)
-                    VALUES ($1, $2, $3, NOW(), $4, $5, $6) RETURNING id, date_created
-                    `;
+                //     let sql = `INSERT INTO chat_data_language (sender_id, text, youtube, date_created, topic_id, picture, check_id)
+                //     VALUES ($1, $2, $3, NOW(), $4, $5, $6) RETURNING id, date_created
+                //     `;
                     
-                    dbInsert = await db.query(sql, [uid,data.text,nullVal,data.topicId, pic, checkId]);
+                //     dbInsert = await db.query(sql, [uid,data.text,nullVal,data.topicId, pic, checkId]);
                     
-                }else if(data.type == 'daily'){
-                    let sql = `INSERT INTO chat_data_topic (sender_id, text, youtube, date_created, topic_id, picture, check_id)
-                    VALUES ($1, $2, $3, NOW(), $4, $5, $6) RETURNING id, date_created
+                // }else if(data.type == 'topic'){
+
+                if(data.type == 'topic'){
+                    pic = await uploadImage2(data.img,'topic_chat');
+                    //console.log(pic)
+                    let sql = `INSERT INTO chat_data_topic (id_sender, text, date_created, id_topic, image, id_check)
+                    VALUES ($1, $2,  NOW(), $3, $4, $5) RETURNING id, date_created
                     `;
     
-                    dbInsert = await db.query(sql, [uid,data.text,nullVal,data.topicId, pic, checkId]);
+                    dbInsert = await db.query(sql, [MYID,data.text,data.topicId, pic, checkId]);
                     
                 }else{ //private
-                    let sql = `INSERT INTO chat_data_personal (sender_id, text, receiver_id, identity, date_created, read_status,  youtube, picture, check_id)
-                    VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7, $8) RETURNING id, date_created
+                    pic = await uploadImage2(data.img,'private_chat');
+                    let sql = `INSERT INTO chat_data_personal 
+                    (sender_id, text, receiver_id, identity, date_created, 
+                    read_status, image, id_check)
+                    VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7) RETURNING id, date_created
                     `;
                     let identityArr = data.topicId;
                     let receiverId;
                     for(let i = 0 ; i < identityArr.length; i++){
-                        if(uid != identityArr[i]){
+                        if(MYID != identityArr[i]){
                             receiverId = identityArr[i];
                         }
                     }
                     
-                    dbInsert = await db.query(sql, [uid,data.text,receiverId,data.topicId, zero, nullVal, pic, checkId]);
+                    dbInsert = await db.query(sql, [MYID,data.text,receiverId,data.topicId, zero, pic, checkId]);
                     
                 }
                 //get sender data to present in ui
                 let sqlSender = `SELECT id AS uid, name, username, photo FROM users WHERE id = $1 LIMIT 1`;
-                let dbSender = await db.query(sqlSender, [uid]);
+                let dbSender = await db.query(sqlSender, [MYID]);
                 
                 let returnId = dbInsert.rows[0].id;
                 let returnDate = dbInsert.rows[0].date_created;
@@ -299,9 +373,9 @@ module.exports = function(server,session){
                     ctype : data.type,
                     checkId : checkId
                 }
-                socket.emit('chat_send_finish', senderData);
+                socket.emit('chat_send', senderData);
             }catch(err){
-                
+                console.log(err);
             }
         });
 

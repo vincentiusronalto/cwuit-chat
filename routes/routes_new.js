@@ -5,25 +5,31 @@ const db = require('../db/db');
 async function ifLoggedIn(req,res,next){
     
     if(req.session.uid){
-        let myData = await db.query(`SELECT id,name,username,photo FROM users WHERE id = $1 LIMIT 1`,[req.session.uid]);
-        res.locals.MYDATA = myData.rows[0]
+        let myData = await db.query(
+        `SELECT id,name,username,photo,
+        info_bio, info_website, info_instagram, info_facebook, info_twitter, info_country, info_gender date_created
+        FROM users WHERE id = $1 LIMIT 1`,[req.session.uid]);
+        res.locals.MYDATA = myData.rows[0];
         res.locals.myid = req.session.uid;
         res.locals.ifLogin =  true;
     }else{
-
+        
         res.locals.myid = '';
         res.locals.ifLogin = false;
     }
     
-    next();
+    next()
 }
 
-router.use(ifLoggedIn);
+function hello(){
+    console.log('hellow');
+}
 
 
 
-
-router.get("/", async function(req,res,next){ 
+router.get("/", ifLoggedIn, async function(req,res,next){ 
+    
+    hello();
     if(res.locals.ifLogin){
         res.redirect('/chat')
     }else{
@@ -34,7 +40,8 @@ router.get("/", async function(req,res,next){
 
 // PROTECT IMAGE
 
-router.get("/upload/private_chat/:something", async function(req,res,next){
+router.get("/upload/private_chat/:something", ifLoggedIn, async function(req,res,next){
+    
     let MYID = req.session.uid;
     if(!MYID){
         res.status(403).send({
@@ -56,13 +63,16 @@ router.get("/upload/private_chat/:something", async function(req,res,next){
 });
 
 
-router.get("/login", async function(req,res,next){
+router.get("/login", ifLoggedIn, async function(req,res,next){
+    
     res.render('login',{link:'login', csrf:req.csrfToken()});
 });
-router.get("/chat", async function(req,res,next){
+router.get("/chat", ifLoggedIn, async function(req,res,next){
+    
     res.render('index',{link:'chat', csrf:req.csrfToken()});
 });
-router.get("/u/:username", async function(req,res,next){
+router.get("/u/:username", ifLoggedIn,async function(req,res,next){
+    
     res.render('index',{link:'profile', csrf:req.csrfToken()});
 });
 
