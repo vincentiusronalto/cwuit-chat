@@ -70,8 +70,13 @@
                         <img src="/test/illus_chat.svg" alt="chat" id="illustration_chat">
                         <div>
                             <h1>Welcome to cwuit.com online chat</h1>
-                            <h2>Please select left menu to chat</h2>
-                            <h2>Or Please Login If you haven't so</h2>
+                            <%if (locals.ifLogin == false) { %>
+                                <a id="sign_btn" href="/login">
+                                    Sign In
+                                </a>
+                                <% } else { %>
+                                    <h2>Select Left Menu to start chatting...</h2>
+                                <% } %>
                         </div>
                         
                     </div>
@@ -92,36 +97,7 @@
                     Vrozen's Profile
                 </div>
                 <div id="profile_right_inside">
-                    <img src="/test/profile_test.png" class="profile_pic_big">
-                    <div><span class="material-icons icon-female">female</span>Roxy</div>
-                    <mention>@Roxy</mention>
                     
-                    <div id="profile_bio_wrapper">"hi"</div>
-                    <div>
-                        Join : March 13, 2021
-                    </div>
-                    <!-- <div class="profile_single_wrapper">
-                        <div><img src="/icon/loc.png" alt="country" class="profile_icon"></div> 
-                        <div>?</div>
-                    </div> -->
-                    
-                    <!-- <a href="https://www.twitter.com/some" class="profile_single_wrapper">
-                        <div><img src="/icon/tw.png" alt="twitter" class="profile_icon"></div> 
-                        <div>?</div>
-                    </a>
-                    <a href="https://www.website.com" class="profile_single_wrapper">
-                        <div><img src="/icon/web.png" alt="website" class="profile_icon"></div> 
-                        <div>?</div>
-                    </a> -->
-
-                    <div id="profile_social_media_wrapper">
-                        <a href="https://www.facebook.com/some" class="profile_single_wrapper">
-                            <div><img src="/icon/fb.png" alt="facebook" class="profile_icon"></div> 
-                        </a>
-                        <a href="https://www.instagram.com/some" class="profile_single_wrapper">
-                            <div><img src="/icon/ig.png" alt="instagram" class="profile_icon"></div> 
-                        </a>
-                    </div>
 
                 </div>
                 

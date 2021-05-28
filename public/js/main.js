@@ -10,22 +10,339 @@
     let MY_FB = document.getElementById('MY_FB').value;
     let MY_TW = document.getElementById('MY_TW').value;
     let MY_CTY = document.getElementById('MY_CTY').value;
-
     let MY_DATE = document.getElementById('MY_DATE').value;
 
-    
-    function initProfile(){
-
+    let MY_PROFILE = 
+    {
+        name     : MY_NAME,
+        uname    : MY_USERNAME,
+        uid      : MY_ID, 
+        photo    : MY_PHOTO,
+        gender   : MY_GEN,
+        bio      : MY_BIO,
+        web      : MY_WEB,
+        ig       : MY_IG,
+        fb       : MY_FB,
+        tw       : MY_TW,
+        cty      : MY_CTY,
+        date     : MY_DATE,
+        isme     : true
     }
 
+    console.log(MY_PROFILE)
+
+    function initProfile(data){
+        /*
+        <div id="profile_right_inside">
+                    <img src="/test/profile_test.png" class="profile_pic_big">
+                    <div><span class="material-icons icon-female">female</span>Roxy</div>
+                    <mention>@Roxy</mention>
+                    
+                    <div id="profile_bio_wrapper">"hi"</div>
+                    <div>
+                        Join : March 13, 2021
+                    </div>
+                    <!-- <div class="profile_single_wrapper">
+                        <div><img src="/icon/loc.png" alt="country" class="profile_icon"></div> 
+                        <div>?</div>
+                    </div> -->
+                    
+                    <!-- <a href="https://www.twitter.com/some" class="profile_single_wrapper">
+                        <div><img src="/icon/tw.png" alt="twitter" class="profile_icon"></div> 
+                        <div>?</div>
+                    </a>
+                    <a href="https://www.website.com" class="profile_single_wrapper">
+                        <div><img src="/icon/web.png" alt="website" class="profile_icon"></div> 
+                        <div>?</div>
+                    </a> -->
+
+                    <div id="profile_social_media_wrapper">
+                        <a href="https://www.facebook.com/some" class="profile_single_wrapper">
+                            <div><img src="/icon/fb.png" alt="facebook" class="profile_icon"></div> 
+                        </a>
+                        <a href="https://www.instagram.com/some" class="profile_single_wrapper">
+                            <div><img src="/icon/ig.png" alt="instagram" class="profile_icon"></div> 
+                        </a>
+                    </div>
+
+        </div>
+        */
+
+        //location build
+        let loc = '';
+        if(data.cty){
+            loc = 
+            `
+            <div class="profile_single_wrapper">
+                <div><img src="/icon/loc.png" alt="country" class="profile_icon"></div> 
+                <div>${data.cty}</div>
+            </div>
+            `;
+        }
+        //social media build
+        
+
+        let socmedI = '';
+
+        if(data.web){
+            socmedI +=`
+            <a href="${data.web}" class="profile_single_wrapper">
+                <div><img src="/icon/web.png" alt="website" class="profile_icon"></div> 
+                </a> 
+            </a>`
+        }
+        if(data.ig){
+            socmedI +=`
+            <a href="https://www.instagram.com/${data.ig}" class="profile_single_wrapper">
+                <div><img src="/icon/ig.png" alt="instagram" class="profile_icon"></div> 
+                </a> 
+            </a>`
+        }
+        if(data.fb){
+            socmedI +=`
+            <a href="https://www.facebook.com/${data.fb}" class="profile_single_wrapper">
+                <div><img src="/icon/fb.png" alt="facebook" class="profile_icon"></div> 
+                </a> 
+            </a>`
+        }
+        if(data.tw){
+            socmedI +=`
+            <a href="https://www.twitter.com/${data.tw}" class="profile_single_wrapper">
+                <div><img src="/icon/tw.png" alt="twitter" class="profile_icon"></div> 
+                </a> 
+            </a>`
+        }
+    
+
+        let soctotal = 
+        `
+        <div id="profile_social_media_wrapper">
+            ${socmedI}
+        </div>
+        `;
+
+        if(socmedI == ''){
+            soctotal = '';
+        }
+        console.log(data.date);
+        //Join : ${G_dateFormat(data.date)}
+        let biomaker = '';
+        if(!data.bio){
+            biomaker = `Hi I'm new here`;
+        }else{
+            biomaker = data.bio;
+        }
+
+
+        let EditBtn = '';
+        //check if me
+        if(data.isme)
+        {
+            EditBtn = `<div id="edit_profile_btn">Edit Profile</div>`;
+        }
+
+        let profile = `
+        <div id="profile_right_inside">
+                    <img src="/upload/user/${data.photo}" class="profile_pic_big">
+                    <div><span class="material-icons icon-${data.gender}">${data.gender}</span>${data.name}</div>
+                    <mention>@${data.uname}</mention>
+                    
+                    <div id="profile_bio_wrapper">"${biomaker}"</div>
+                    <div>
+                        Join : ${G_dateFormat(data.date)}
+                    </div>
+
+                    ${loc}
+                    
+                   
+                    ${soctotal}
+
+                    ${EditBtn}
+
+        </div>
+        `
+
+        let header = `${data.name}'s profile`;
+        
+        document.getElementById('profile_header').innerHTML = header;
+        document.getElementById('profile_right_inside').innerHTML = profile;
+    }
+
+    initProfile(MY_PROFILE)
+
+    //edit profile
+    document.addEventListener('click',function(e){
+        if(e.target.closest('#edit_profile_btn')){
+            if(!document.getElementById('edit_profile_wrapper')){
+
+        
+        //hide input chat
+        document.getElementById('chat_room_input').classList.add('hide');
+
+        //select gender init
+        let gender_male = '';
+        let gender_female = '';
+        let gender_secret = '';
+        if(MY_PROFILE.gender == 'male'){
+            gender_male = 'gender_select_active';
+        }
+        else if(MY_PROFILE.gender == 'female'){
+            gender_female = 'gender_select_active';
+        }
+        else{
+            gender_secret = 'gender_select_active';
+        }
+        
+        //show profile edit page
+        let editProfilePage = 
+        `
+        <div id="edit_profile_wrapper">
+            <div><img src="/upload/user/${MY_PROFILE.photo}" class="profile_pic_big" id="edit_profile_pp"></div>
+            <label id="change_profile_picture_btn" for="change_profile_pic_hidden">
+                <input type="file" accept="image/png, image/jpeg" id="change_profile_pic_hidden">
+                <span class="material-icons">photo_camera</span>
+                <div>Change Profile Picture</div>
+            </label> 
+            <div id="cancel_profile_pic">
+
+            </div>
+
+            <div id="gender_select" class="mbt10">
+                <div class="gender_select_single ${gender_secret}" data-gender="">
+                    Secret
+                </div>
+                <div class="gender_select_single ${gender_male}" data-gender="male">
+                    Male
+                </div>
+                <div class="gender_select_single ${gender_female}" data-gender="female">
+                    Female
+                </div>
+            </div>
+
+            <div>
+                <div>
+                <input type="text" value="${MY_PROFILE.name}" placeholder="Name" class="mbt10" id="change_profile_data_name">
+                </div>
+                <div>
+                <input type="text" value="${MY_PROFILE.bio}" placeholder="About Me" class="mbt10" id="change_profile_data_bio">
+                </div>
+                
+            </div>
+
+            
+            <div>
+                <input type="text" value="${MY_PROFILE.cty}" placeholder="Country" class="mbt10" id="change_profile_data_country">
+            </div>
+            <div>
+                <input type="text" value="${MY_PROFILE.web}" placeholder="Website" class="mbt10" id="change_profile_data_website">
+            </div>
+            
+            <div>
+                
+                <div>
+                    <input type="text" value="${MY_PROFILE.ig}" placeholder="Instagram Username" class="mbt10"  id="change_profile_data_instagram">
+                </div>
+                <div>
+                    <input type="text" value="${MY_PROFILE.fb}" placeholder="Facebook Username" class="mbt10" id="change_profile_data_facebook">
+                </div>
+                <div>
+                    <input type="text" value="${MY_PROFILE.tw}" placeholder="Twitter Username" class="mbt10" id="change_profile_data_twitter">
+                </div>
+                
+                
+
+            </div>
+
+            <div id="submit_change_profile">Submit Change</div> 
+        </div>
+        `
+        document.getElementById('info_which_chat').innerHTML = 'Edit Profile';
+        document.getElementById('chat_room_output').innerHTML = editProfilePage;
+        console.log(document.getElementById('change_profile_pic_hidden').value)
+        }
+        }
+        //change gender
+        else if(e.target.closest('.gender_select_single')){
+            let genderS = document.getElementsByClassName('gender_select_single');
+            for(let i = 0; i < genderS.length; i++){
+                genderS[i].classList.remove('gender_select_active');
+            }
+            e.target.classList.add('gender_select_active');
+        }
+
+        //submit
+        else if(e.target.closest('#submit_change_profile')){
+            //get photo data
+            let photo = document.getElementById('change_profile_pic_hidden').value;
+            let photoF = '';
+            if(photo){
+                photoF = document.getElementById("edit_profile_pp").getAttribute("src")
+            }
+            console.log(photoF)
+
+            //get gender
+            let activeGender = document.querySelector('.gender_select_active');
+            let gender = activeGender.getAttribute('data-gender');
+
+            //get other data
+            let name = document.getElementById('change_profile_data_name').value.trim();
+            let bio = document.getElementById('change_profile_data_bio').value.trim();
+            let country = document.getElementById('change_profile_data_country').value.trim();
+            let website = document.getElementById('change_profile_data_website').value.trim();
+            let instagram = document.getElementById('change_profile_data_instagram').value.trim();
+            let facebook = document.getElementById('change_profile_data_facebook').value.trim();
+            let twitter = document.getElementById('change_profile_data_twitter').value.trim();
+
+            let sendData = {
+                photo : photoF,
+                gender,
+                name,
+                bio,
+                country,
+                website,
+                instagram,
+                facebook,
+                twitter
+            }
+            console.log(sendData);
+            socket.emit('profile_update', sendData);
+        
+     }
+    });
+
+
+    //EDIT PROFILE PHOTO
+    function getPic(iHidden) {
+        const file = document.querySelector(iHidden).files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+        document.getElementById("edit_profile_pp").setAttribute("src", reader.result)
+        };
+
+        document.getElementById('cancel_profile_pic').innerHTML = '<div id="cancel_change_pp">Cancel Change Photo</div>'
+        console.log(document.getElementById('change_profile_pic_hidden').value)
+        
+   }    
+
+   document.addEventListener('click', function(event){
+        if(event.target.closest('#cancel_change_pp')){
+            
+            document.getElementById("edit_profile_pp").setAttribute("src", `/upload/user/${MY_PROFILE.photo}`);
+            document.getElementById("change_profile_pic_hidden").value = "";
+            console.log(document.getElementById('change_profile_pic_hidden').value)
+        }
+   })
+
+   document.addEventListener('change', function(event){
+        if(event.target.closest('#change_profile_pic_hidden')){
+            getPic('#change_profile_pic_hidden');
+        }
+   });
+   
+
+
     function G_dateFormat(dateInput){
-        //format 1
-        //2020-01-21 03:44:21
-        //year-month-date hours:minute:second
-        // let dInputObj = new Date();
-      
-        //format2 
-        //July 4, 2020
         let isoDate = new Date(dateInput).toISOString();
         let dInputObj = new Date(isoDate);
         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -297,6 +614,49 @@
                 output.scrollTop = output.scrollHeight;
                 output.style.opacity = "1";
             },'300')
+
+
+        //initProfile()
+        /*
+            "profile": {
+                "id": "2",
+                "name": "user2",
+                "username": "user2",
+                "photo": "profile_test.png",
+                "date_created": "2021-05-26T18:48:36.268Z",
+                "info_instagram": null,
+                "info_twitter": null,
+                "info_bio": null,
+                "info_website": null,
+                "info_country": null,
+                "info_facebook": null
+
+                topic_name: "All" //if topic
+            }
+        */
+
+            if(data.profile.type == 'private'){
+                let PARTNER = {
+                    name     : data.profile.name,
+                    uname    : data.profile.username,
+                    uid      : data.profile.id, 
+                    photo    : data.profile.photo,
+                    gender   : data.profile.info_gender,
+                    bio      : data.profile.info_bio,
+                    web      : data.profile.info_website,
+                    ig       : data.profile.info_instagram,
+                    fb       : data.profile.info_facebook,
+                    tw       : data.profile.info_twitter,
+                    cty      : data.profile.info_country,
+                    date     : data.profile.date_created,
+                    isme     : false
+                }
+                initProfile(PARTNER)
+            }else{
+                initProfile(MY_PROFILE)
+            }
+
+
     });
 
 

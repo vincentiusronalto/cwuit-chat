@@ -258,7 +258,7 @@ module.exports = function(server,session){
             let dbProfile = 
             await db.query(`SELECT id, name, username, photo, date_created, info_instagram, 
             info_twitter, info_bio, info_website, info_country, 
-            info_facebook FROM users WHERE id = $1 LIMIT 1`,[profileId]);
+            info_facebook, info_gender FROM users WHERE id = $1 LIMIT 1`,[profileId]);
             let profile = dbProfile.rows[0];
             // console.log(profileId)
             try{
@@ -388,11 +388,68 @@ module.exports = function(server,session){
             }
         });
 
-        socket.on('profile_update', async function(){
+        socket.on('profile_update', async function(data){
             try{
+                
+               
+
+
+                let sqlUpdate = '';
+                //without image
+                sqlUpdate = 
+                `UPDATE USERS SET 
+                name = $1, 
+                info_gender = NULLIF($2,''),
+                info_bio = NULLIF($3,''),
+                info_country = NULLIF($4,''),
+                info_website = NULLIF($5,''),
+                info_instagram = NULLIF($6,''),
+                info_facebook = NULLIF($7,''),
+                info_twitter = NULLIF($8,'')
+                `
+                /*
+                {
+                    name: 'vrozen',
+                    gender: 'male',
+                    bio: 'Hi im the maker of cwuit.com',
+                    country: '',
+                    website: '',
+                    instagram: '',
+                    facebook: '',
+                    twitter: '',
+                    photo: ''
+                }
+                */
+
+                let name = cleanInput(data.name);
+                let gender = cleanInput(data.gender);
+                let bio = cleanInput(data.bio);
+                let country = cleanInput(data.country);
+                let website = cleanInput(data.website);
+                let instagram = cleanInput(data.instagram);
+                let facebook = cleanInput(data.facebook);
+                let twitter = cleanInput(data.twitter);
+                let dbUpdate = '';
+                if(!data.photo){
+                    dbUpdate = await db.query(sqlUpdate,[
+                        $name,$gender,$bio,$country,$website,$instagram,$facebook,$twitter
+                    ])
+                }else{
+                    //upload new photo
+                    sqlUpdate += `,
+                    photo = $9`;
+                    dbUpdate = await db.query(sqlUpdate,[
+                        $name,$gender,$bio,$country,$website,$instagram,$facebook,$twitter,$newphoto
+                    ])
+                }
+                
+
+            
+
+
 
             }catch(err){
-                
+                console.log(err);
             }
         });
 

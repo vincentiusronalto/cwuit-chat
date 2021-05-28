@@ -7,9 +7,13 @@ async function ifLoggedIn(req,res,next){
     if(req.session.uid){
         let myData = await db.query(
         `SELECT id,name,username,photo,
-        info_bio, info_website, info_instagram, info_facebook, info_twitter, info_country, info_gender date_created
+        info_bio, info_website, info_instagram, info_facebook, info_twitter, info_country, info_gender, date_created
         FROM users WHERE id = $1 LIMIT 1`,[req.session.uid]);
+
+
         res.locals.MYDATA = myData.rows[0];
+
+        console.log(res.locals.MYDATA)
         res.locals.myid = req.session.uid;
         res.locals.ifLogin =  true;
     }else{
