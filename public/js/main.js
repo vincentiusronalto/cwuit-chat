@@ -197,6 +197,8 @@
         let editProfilePage = 
         `
         <div id="edit_profile_wrapper">
+            <div id="profile_success" class="hide">Successfully Updated Profile, Reloading the page...</div>
+            <div id="profile_failed" class="hide">Sorry, Error on Updating Profile</div>
             <div><img src="/upload/user/${MY_PROFILE.photo}" class="profile_pic_big" id="edit_profile_pp"></div>
             <label id="change_profile_picture_btn" for="change_profile_pic_hidden">
                 <input type="file" accept="image/png, image/jpeg" id="change_profile_pic_hidden">
@@ -309,6 +311,20 @@
         
      }
     });
+
+    socket.on('profile_update', function(data){
+        let page = document.getElementById('chat_room_output');
+            page.scrollTop = '0';
+        if(data){
+            //success
+            document.getElementById('profile_success').classList.remove('hide')
+            setTimeout(function(){location.reload();},'1500')
+        }else{
+            //failed
+            document.getElementById('profile_failed').classList.remove('hide')
+
+        }
+    })
 
 
     //EDIT PROFILE PHOTO

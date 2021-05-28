@@ -67,7 +67,7 @@ async function uploadImage2(input, location){
     try{
 
     
-    console.log(input,location)
+    
     //single image upload , without old file name
     
     // (input);
@@ -394,19 +394,7 @@ module.exports = function(server,session){
                
 
 
-                let sqlUpdate = '';
-                //without image
-                sqlUpdate = 
-                `UPDATE USERS SET 
-                name = $1, 
-                info_gender = NULLIF($2,''),
-                info_bio = NULLIF($3,''),
-                info_country = NULLIF($4,''),
-                info_website = NULLIF($5,''),
-                info_instagram = NULLIF($6,''),
-                info_facebook = NULLIF($7,''),
-                info_twitter = NULLIF($8,'')
-                `
+             
                 /*
                 {
                     name: 'vrozen',
@@ -429,20 +417,51 @@ module.exports = function(server,session){
                 let instagram = cleanInput(data.instagram);
                 let facebook = cleanInput(data.facebook);
                 let twitter = cleanInput(data.twitter);
+                let photo = cleanInput(data.photo);
+                
                 let dbUpdate = '';
-                if(!data.photo){
+                let newphoto = '';
+                if(!photo){
+                    let sqlUpdate = 
+                        `UPDATE USERS SET 
+                        name = $1, 
+                        info_gender = NULLIF($2,''),
+                        info_bio = NULLIF($3,''),
+                        info_country = NULLIF($4,''),
+                        info_website = NULLIF($5,''),
+                        info_instagram = NULLIF($6,''),
+                        info_facebook = NULLIF($7,''),
+                        info_twitter = NULLIF($8,'') WHERE id = $9 RETURNING id
+                        `
                     dbUpdate = await db.query(sqlUpdate,[
-                        $name,$gender,$bio,$country,$website,$instagram,$facebook,$twitter
+                        name,gender,bio,country,website,instagram,facebook,twitter,MYID
                     ])
                 }else{
-                    //upload new photo
-                    sqlUpdate += `,
-                    photo = $9`;
+                    let sqlUpdate = 
+                    `UPDATE USERS SET 
+                    name = $1, 
+                    info_gender = NULLIF($2,''),
+                    info_bio = NULLIF($3,''),
+                    info_country = NULLIF($4,''),
+                    info_website = NULLIF($5,''),
+                    info_instagram = NULLIF($6,''),
+                    info_facebook = NULLIF($7,''),
+                    info_twitter = NULLIF($8,''), photo = $9 WHERE id = $10 RETURNING id
+                    `
+                    newphoto = await uploadImage2([photo],'user');
+                    
+                   
                     dbUpdate = await db.query(sqlUpdate,[
-                        $name,$gender,$bio,$country,$website,$instagram,$facebook,$twitter,$newphoto
+                        name,gender,bio,country,website,instagram,facebook,twitter,newphoto,MYID
                     ])
                 }
-                
+
+            let result = dbUpdate.rows[0].id;
+                if(result){
+                    io.to(socketId).emit('profile_update', true);
+                }else{
+                    io.to(socketId).emit('profile_update', false);
+                }
 
             
 
