@@ -14,6 +14,7 @@ const fetch = require('node-fetch');
 // ARRAY FOR GUEST
 let ranNumber = require('random-number');
 const { query } = require('../db/db');
+const e = require('express');
 let options = {
   min:  1
 , max:  999999999999
@@ -133,8 +134,8 @@ module.exports = function(server,session){
         let socketId = socket.id;
         let MYID = 0;
         
-        if(socket.handshake.session.userid){
-            MYID = socket.handshake.session.userid;    
+        if(socket.handshake.session.uid){
+            MYID = socket.handshake.session.uid;    
         }
 
 
@@ -218,6 +219,13 @@ module.exports = function(server,session){
 
                 let dbSingleMemberChat = await db.query(`SELECT u.name, c.text FROM chat_data_private c, users u WHERE identity = $1     AND c.sender_id = u.id ORDER BY c.id DESC LIMIT 1`,[identity]);
                 memberR[i].lastchat = dbSingleMemberChat.rows[0];
+                if(!dbSingleMemberChat.rows[0]){
+                    memberR[i].lastchat = {
+                        name : "hi",
+                        text : "click here to chat"
+                    }
+                }
+                
             }
 
             let result =
@@ -225,7 +233,7 @@ module.exports = function(server,session){
                 topic   : topicList,
                 private : memberR
             }
-            
+            console.log(MYID)
             io.to(socketId).emit('user_load', result);
         });
 
@@ -233,6 +241,7 @@ module.exports = function(server,session){
         // CHAT
 
         socket.on('chat_load', async function(data){
+            console.log(data);
             let type = data.type;
             let id = data.id;
             let inputId = id;
@@ -243,11 +252,16 @@ module.exports = function(server,session){
             }else{
                 let idS = id.split('_');
                 for(let i = 0; i < idS.length; i++){
-                    if(idS[i] != MYID){
+                    // if(idS[i] != '0'){
+
+                    // }
+                    if(idS[i] != '0' && idS[i] != MYID){
                         profileId = idS[i]
                     }
+                    
                 }
             }
+            console.log('idt ', profileId)
             //if topic -> my profile
             
             //if private chat -> their profile
@@ -255,12 +269,19 @@ module.exports = function(server,session){
            
 
             // MYID
-            let dbProfile = 
-            await db.query(`SELECT id, name, username, photo, date_created, info_instagram, 
-            info_twitter, info_bio, info_website, info_country, 
-            info_facebook, info_gender FROM users WHERE id = $1 LIMIT 1`,[profileId]);
-            let profile = dbProfile.rows[0];
-            // console.log(profileId)
+            let profile;
+            if(MYID == 0 && data.type == 'topic'){
+                profile = {id:'0',name:'Guest',username:'guest',photo:'avatar.png',info_bio:'Hii',info_website:'https://www.example.com',info_instagram:'example',info_facebook:'example',info_twitter:'example',info_country:'example',
+                info_gender:'male',date_created:'0'};
+            }else{
+                let dbProfile = 
+                await db.query(`SELECT id, name, username, photo, date_created, info_instagram, 
+                info_twitter, info_bio, info_website, info_country, 
+                info_facebook, info_gender FROM users WHERE id = $1 LIMIT 1`,[profileId]);
+                profile = dbProfile.rows[0];
+            }
+            
+            
             try{
 
                 if(data.type == 'topic'){
@@ -281,6 +302,7 @@ module.exports = function(server,session){
                     let dbTopic = await db.query(sqlChat,[inputId]);
                     chat = dbTopic.rows;
                 }
+                console.log(profile)
                 let result = {chat,profile};
                 
                 io.to(socketId).emit('chat_load', result);

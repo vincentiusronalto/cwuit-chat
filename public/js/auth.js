@@ -28,15 +28,18 @@
               
                 let data = JSON.parse(this.responseText);
                 let type = data.type;
-               
+                
                 if(type == 'login'){
                     let success = data.success;
                     let note = '';
                     if(success){
-                        note = `Successful login`;
+                        note = `<span class="success">Successful login, Entering...<span>`;
+                        setTimeout(function(){window.location.href = "/chat";},'1500');
+                        
                     }else{
-                        note = `Wrong email/username or password`;
+                        note = `<span class="failed">Wrong email/username or password<span>`;
                     }
+                    document.getElementById('auth_confirm').innerHTML = "";
                     document.getElementById('auth_confirm').innerHTML = note;
                     document.getElementById('auth_confirm').style.display = 'block';
                     loginBtn.innerHTML = 'Login';
@@ -46,20 +49,39 @@
                     let email = data.email;
                     let username = data.username;
                     let success = data.success;
+                    let errArr = data.errorCheck;
+
                     let note = ''
                     if(success){
-                        note = `Thanks ${username} for joining, we have sent verification email to ${email}`;
+                        note = `<span class="success">Thanks ${username} for joining, Entering...<span>`;
+                        setTimeout(function(){window.location.href = "/chat";},'1500');
                     }else{
+                        /*
+                        {"success":false,"type":"signup","errorCheck":{"username_unique":[0,"username : already exist"],"username_alpha":[0,"username : only alphanumeric allowed (a-z or 0-9)"],"username_length":[1,"username : 4-50 characters allowed"],"email_unique":[0,"email : already exist"],"email_valid":[1,"email : invalid format"],"password_length":[1,"password : min 7 characters allowed"]}}
+
+
+                        */
+                        
                         for(let i=0; i < errArr.length ; i++){
-                            note += `<div>${errArr[i]}</div>`;
+                            note += `<div class="failed">${errArr[i]}</div>`;
                         }
                     }
+                    document.getElementById('auth_confirm').innerHTML = "";
                     document.getElementById('auth_confirm').innerHTML = note;
                     document.getElementById('auth_confirm').style.display = 'block';
                 }
 
                 else if(type == 'passreset'){
-    
+                    let success = data.success;
+                    let note = '';
+                    if(success){
+                        note = `<span class="success">Check your email for password reset<span>`;
+                    }else{
+                        note = `<span class="failed">Wrong email/username<span>`;
+
+                    }
+                    document.getElementById('auth_confirm').innerHTML = "";
+                    document.getElementById('auth_confirm').innerHTML = note;
                 }
               }
           };
@@ -110,7 +132,8 @@
         
         let sendString = `username=${username}&email=${email}&password=${password}`;
         let destination = 'auth_register';
-        // console.log(sendString, destination, csrfVal);
+        console.log(sendString, destination, csrfVal);
+        
         sendAuthPost(sendString, destination, csrfVal);
     });
     
@@ -119,7 +142,7 @@
         let sendString = `uname_email=${usernameEmail}`;
         let destination = 'auth_req_change_password';
         console.log(sendString, destination, csrfVal);
-        // sendAuthPost(sendString, destination, csrfVal);
+        sendAuthPost(sendString, destination, csrfVal);
     });
 
     

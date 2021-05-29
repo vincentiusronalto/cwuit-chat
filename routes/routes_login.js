@@ -7,7 +7,8 @@ const emailValidator = require('email-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 8;
 const uniqueKeygen = require('unique-keygen');
-const sendemail = require('../lib/sendemail.js');
+// const sendemail = require('../lib/sendemail.js');
+const sendemail = require('../lib/sendemail_new.js');
 
 function tokenMaker(){
     let id1 = uniqueKeygen(20);
@@ -141,7 +142,7 @@ router.post("/auth_register", async function(req,res,next){
         let password =  xssFilters.inHTMLData(req.body.password);
 
         let formdata = {username,email,password};
-        
+        console.log(formdata)
         let errExist = false;
 
         let errorCheck = {
@@ -193,6 +194,8 @@ router.post("/auth_register", async function(req,res,next){
         if(passL < 7){
             errorCheck.password_length[0] = 1;
         }
+
+        console.log(errorCheck)
         let errArr = [];
         //CHECKING IF ANY ERROR = 1
         for (let key in errorCheck){
@@ -206,119 +209,51 @@ router.post("/auth_register", async function(req,res,next){
     
         if(errExist){
           
-            // req.session.signupErrExist = 'y';
-            // req.session.signupErr      = errorCheck;
-            // req.session.signupForm     = formdata;
-            // res.redirect("/signup");
+    
             res.send({
                 success  : false,
                 type:'signup',
-                errorCheck
+                errorCheck : errArr
             })
             
         }else{
            
-            //Start save to db
-            //bcrypt pass
-
-            /*
-
-            CREATE TABLE users (
-            id BIGSERIAL PRIMARY KEY,
-            name text,
-            username text,
-            info_instagram text,
-            info_website text,
-            info_bio text,
-            info_facebook text,
-            info_twitter text,
-            info_country text,
-            date_created timestamp with time zone,
-            photo text,
-            info_gender text,
-            authority text,
-            password text,
-            email text,
-            date_deleted timestamp with time zone,
-            email_verified integer
-            );
-            */
+          
             const hashPassword = await bcrypt.hash(password,saltRounds);
+            let authority = 'member';
+            let info_bio = `Hi I'm new here`;
+            let photo = 'avatar.png'
             let saveUserSql = 
             `INSERT INTO users 
-            (date_created, password, name, username, photo, email, authority)
-            VALUES (NOW(), $1, $2, $2, $3, $4, $5) RETURNING id`
-            let dbSaveNewUser = await db.query(saveUserSql,[hashPassword,username, photo, email, authority])
+            (date_created, password, name, username, photo, email, authority, info_bio)
+            VALUES (NOW(), $1, $2, $2, $3, $4, $5, $6) RETURNING id`
+            let dbSaveNewUser = await db.query(saveUserSql,[hashPassword,username, photo, email, authority, info_bio])
            
-            
-            // const dbSaveUsers  = await db.query(`
-            // INSERT INTO users
-            // (username,email,password,
-            // name, date_created, 
-            // status_is_online, 
-            // status_last_online, 
-            // email_verified, photo, 
-            // role, gems, verified, theme, exist, membership) 
-            // VALUES($1,$2,$3,$1,NOW(), '0',NOW(),'0','profileempty.png','3','0','0','night','1','Member') 
-            // RETURNING id`, [username,email,hashPassword]);
-            // const user_id = dbSaveUsers.rows[0].id;
-    
-            // //make additional info
-            // const dbInsertAdditional = await db.query(`
-            // INSERT INTO users_info 
-            // (uid, instagram, facebook, twitter, 
-            // youtube, hobby, website, country, about_me,last_edit) 
-            // VALUES ($1,'','','','','','','','',NOW()) RETURNING id`,[user_id]);  
-            
-            
-                
-            //Redirect to verification & Send Email Activation
-            //VERIFICATION PROCESS//PREPARE DATA FOR EMAIL ACTIVATION
-            let user_id = dbSaveUser.rows[0].id;
-            let emailTo = formdata.email;
-            let tokenResult = tokenMaker();
-            let {token_hash,token_check,token} = tokenResult; 
-    
-    
-            token_hash = await bcrypt.hash(token_hash,saltRounds);
-            
-            const dbInsertToken = await db.query("INSERT INTO token_request(token_hash, token_check, expiration_date, user_id, available) VALUES ($1, $2, NOW() + interval '1 hour', $3, TRUE)", [token_hash, token_check, user_id]);
-    
-            if(process.env.STATE == 'D'){
-                linkVerification = 'http://localhost:3000/verify?token='+token;
-            }else{
-                linkVerification = 'https://cwuit.com/verify?token='+token;
-            }
-            
-            //------ SENDING EMAIL
-            let textSend = `<p>to activate your cwuit account, please click/copy the link below (this link below will be expired for hour from now on):</p><p><a href="${linkVerification}">${linkVerification}</a></p>`;
-    
-            const data = {
-                from: 'Cwuit <noreply@cwuit.com>',
-                to: emailTo,
-                subject: 'Please Activate Your Account',
-                html: textSend
-            }
-            
-            const sendEmail = await sendemail(data);
-            
-            //--------------------
-                
-            // req.session.validateEmail = 'y';
-            // req.session.verificationEmail =  emailTo;
-            // res.redirect("/verification");
-            req.session.userid = user_id;
+            let user_id = dbSaveNewUser.rows[0].id;
+           
+            req.session.uid = user_id;
             req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
             req.session.justlogin = 'y';
-
-            res.send({
-                success  : true,
-                type:'signup',
-                errorCheck,
-                email,
-                username
-
-            })
+                if(user_id){
+                    res.send({
+                        success  : true,
+                        type:'signup',
+                        errorCheck,
+                        email,
+                        username
+        
+                    })
+                }else{
+                    res.send({
+                        success  : false,
+                        type:'signup',
+                        errorCheck,
+                        email,
+                        username
+        
+                    })
+                }
+            
         }
         }catch(err){
             console.log(err)
@@ -327,8 +262,10 @@ router.post("/auth_register", async function(req,res,next){
 })
 router.post("/auth_req_change_password", async function(req,res,next){
     try{
-        const email = xssFilters.inHTMLData(req.body.email);
+        // const email = xssFilters.inHTMLData(req.body.email);
         
+        let email ='vincentius.ronalto.d@gmail.com';
+        console.log(email)
         //CHECK EMAIL
         const dbCheckEmail = await db.query('SELECT id FROM users WHERE email = $1', [email]);
         
@@ -353,6 +290,7 @@ router.post("/auth_req_change_password", async function(req,res,next){
                 linkChangePassword = 'http://localhost:3000/change_password?token='+token;
             }else{
                 linkChangePassword = 'https://www.cwuit.com/change_password?token='+token;
+                
             }
             // thank you, we have sent link email regarding password reset
             // sorry, email not valid/not registered in our database, please signup first
@@ -360,6 +298,14 @@ router.post("/auth_req_change_password", async function(req,res,next){
             
             let textSend = `<p>to reset your account password, please click/copy the link below: (this link below will be expired for hour from now on)</p><p><a href="${linkChangePassword}">${linkChangePassword}</a></p>`;
             
+
+            //{
+                //     from: "Excited User <mailgun@sandbox-123.mailgun.org>",
+                //     to: ["test@example.com"],
+                //     subject: "Hello",
+                //     text: "Testing some Mailgun awesomness!",
+                //     html: "<h1>Testing some Mailgun awesomness!</h1>"
+                //   }
             const data = {
                 from: 'Cwuit <noreply@cwuit.com>',
                 to: email,
@@ -369,21 +315,37 @@ router.post("/auth_req_change_password", async function(req,res,next){
             
             //SEND EMAIL
             const sendEmail = await sendemail(data);
-            
+            console.log(sendEmail)
             if(sendEmail){
                 req.session.passResetOk =  true;
-                res.send('success');
+                
+                res.send({
+                    success  : true
+                    
+                })
                 //set session to make user verified go to password reset ok
             }else{
                 //success confirm back to login page
-                res.send('failed');
+                
+                res.send({
+                    success  : false
+                   
+                })
             }
         }else{
-            res.send('notexist');
+            console.log('here')
+            res.send({
+                success  : false
+                
+            });
         }
 
     }catch(err){
-        res.send(err);
+        console.log(err)
+        res.send({
+            success  : false
+            
+        });
     }
 })
 
@@ -548,5 +510,86 @@ router.get("/auth_req_new_verify_emai", async function(req,res,next){
             res.send(err);
         }
 })
+
+router.get("/change_password", async function(req,res,next){
+
+    res.render('change_password',{mainnav:'support', csrf:req.csrfToken()});
+
+    // try{
+    //     if(req.session.CreateNewPasswordUID){
+            
+    //         req.session.CreateNewPasswordUIDTransfer = req.session.CreateNewPasswordUID;
+       
+    //         res.render('auth/create_new_password',{csrf:req.csrfToken()});
+    //     }else{
+    //         res.redirect('/password_reset');
+    //     }
+        
+    // }catch(err){
+    //     console.log(err);
+    // }
+})
+
+router.post("/create_new_password", async function(req,res,next){
+    
+    try{
+        if(req.session.CreateNewPasswordUIDTransfer){
+            //get password and confirm_password from post body
+            let password         = xssFilters.inHTMLData(req.body.password);
+            let confirm_password = xssFilters.inHTMLData(req.body.confirm_password);
+            let userId = req.session.CreateNewPasswordUIDTransfer;
+            req.session.CreateNewPasswordUIDTransfer = false;
+            if(password.length < 7){
+                res.send({
+                    success : false,
+                    errorMsg :'change password failed - password too short, min 7 chars'
+                });
+                
+            }
+
+
+            //check if password === confirm_password
+            else if(password != confirm_password){
+                res.send({
+                    success  : false,
+                    errorMsg : 'change password failed - wrong confirm field'
+                })
+                // res.send('change password failed - wrong confirm field');
+            }
+            else{
+                //all-passed change user password
+                //first encrypt the password
+                const hashPassword = await bcrypt.hash(password,saltRounds);
+
+                //second save to db
+                const dbUpdateUserPassword = await db.query('UPDATE users SET password = $1 WHERE id = $2', [hashPassword, userId]);
+
+                
+                
+
+                // res.send('success :O');
+                res.send({
+                    success  : true,
+                    errorMsg : 'success'
+                })
+            }
+            
+
+    }else{
+        
+        res.send({
+            success  : false,
+            errorMsg : 'not valid user, please request a password reset'
+        })
+    }
+    
+    }
+    
+    
+    catch(err){
+        console.log(err);
+    }
+    
+});
 
 module.exports = router;

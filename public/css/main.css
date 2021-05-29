@@ -483,6 +483,44 @@
     margin-bottom: 10px;
 }
 
+#logout_btn{
+    margin: 0  auto;
+    margin-top: 20px;
+    box-sizing: border-box;
+    border: 1px solid rgb(235,235,235);
+    padding: 7px;
+    color: gray;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: block;
+}
+
+#sign_btn{
+    background: #70a1ff;
+    
+    
+    box-sizing: border-box;
+    border: 1px solid rgb(235,235,235);
+    padding: 0 5px;
+    color: white;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: block;
+}
+
+#signin_btn{
+    background: #70a1ff;
+    margin: 0  auto;
+    margin-top: 20px;
+    box-sizing: border-box;
+    border: 1px solid rgb(235,235,235);
+    padding: 7px;
+    color: white;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: block;
+}
+
 #profile_success{
     padding: 10px;
     background: #2ecc71;
@@ -520,4 +558,5 @@ input[type="text"]{
 .mbt10{
     margin-bottom: 10px;
 }
+
 

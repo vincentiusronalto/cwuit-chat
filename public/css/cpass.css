@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:200');
+@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
+body{
+    background : rgb(34,36,43);
+    font-family: 'Raleway';
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+a{
+    text-decoration: none;
+    text-align: center;
+    color: white;
+}
+
+/* Change Autocomplete styles in Chrome*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px rgb(28,29,37) inset;
+    transition: background-color 999999999s ease-in-out 0s;
+}
+
+
+.auth_logo a{
+    font-size: 35px;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    text-decoration: none;
+    margin: 0 auto;
+    display: block;
+    width: 100px;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
+
+#all_auth_top_wrapper{
+    padding: 10px 20px;
+    border-bottom: 1px solid #c3c3c3;
+}
+
+#all_logo_top{
+    font-size: 30px;
+    font-weight: bold;
+    color: #161617 !important;
+}
+
+#all_auth_wrapper{
+    padding-top: 60px;
+    display: flex;
+}
+
+#auth_left_wrapper{
+    width: 50%;
+}
+
+#auth_right_wrapper{
+    width: 50%;
+}
+
+/* LEFT WRAPPER ----------------------------- */
+#browser_view{
+    height: 400px;
+    width: 600px;
+    border: 1px solid #c3c3c3;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+#browser_top{
+    background: rgb(231,234,237);
+    display: flex;
+    padding: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#browser_btn_red{
+    background: rgb(252,98,93);
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    margin-right: 5px;
+}
+
+#browser_btn_yellow{
+    background: rgb(253,191,65);
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    margin-right: 5px;
+}
+
+#browser_btn_green{
+    background: rgb(53,206,75);
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    margin-right: 5px;
+}
+
+#browser_content{
+   display: flex;
+}
+
+#browser_content_left{
+    width: 25%;
+    height: 377px;
+    display: flex;
+    flex-direction: column;
+   justify-content: space-evenly;
+   text-align: center;
+   border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.browser_post_single{
+    display: flex;
+}
+.browser_user_pp{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+
+/* RIGHT WRAPPER ----------------------------- */
+.form_wrapper{
+    margin: 0 auto;
+    width: 400px;
+    z-index: 400;
+}
+
+.verify_message, .verify_success, .verify_failed{
+    text-align: center;
+    color: white;
+}
+
+.verify_email_color{
+    background: rgba(57,174,146,0.3);
+    color: white;
+    padding: 10px;
+}
+
+.verify_checkbox{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    display: block;
+}
+
+.login_font{
+    color: rgb(23,135,252) !important;
+}
+
+.form_heading{
+    text-align: center;
+    color: white;
+}
+
+.form_label{
+    position: absolute;
+    color: #616367;
+    left: 20px;
+    top: 25px;
+    cursor: text;
+    transition: all 200ms;
+    font-size: 18px;
+}
+
+fieldset{
+    margin: 0;
+    padding: 0;
+    border-radius: 5px;
+    border : 1px solid rgba(0, 0, 0, 0.1);
+    background: rgb(28,29,37);
+}
+
+.form_field{
+    position: relative;
+}
+input{
+    padding: 35px 20px 20px 20px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    width: 100%;
+    background: none !important;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    outline: none;
+    caret-color: white;
+    color: white;
+    font-size: 15px;
+}
+
+.last_input{
+    border-bottom: none;
+}
+
+.form_input:focus + .form_label
+{
+    font-size: 70%;
+    transform: translate3d(0, -60%, 0);
+}
+
+
+.filled{
+    font-size: 70%;
+    transform: translate3d(0, -60%, 0);
+}
+
+
+.submit_wrapper{
+    margin-top: 50px;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+.submit_form{
+    text-align: center;
+    height: 50px;
+    border: none;
+    background: rgb(23,135,252) !important;
+    border-radius: 5px;
+    color: white;
+    font-size: 15px;
+    padding: 0 28px;
+    cursor: pointer;
+}
+
+.other_link{
+    margin-top: 30px;
+    text-align: center;
+}
+
+.other_link a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    margin: 0 7px;
+}
+
+.other_link a:hover{
+    text-decoration: underline;
+}
+
+/* error */
+.form_err_wrapper{
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ff6b6b;
+    padding: 10px;
+}
+.form_success_wrapper{
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgb(53,206,75);
+    padding: 10px;
+    color: white;
+}
+
+.form_err_failed{
+    font-size: 15px;
+    margin-bottom: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+    color: #ff6b6b;
+}
+.form_err_list{
+    color: white;
+    font-size: 13px;
+}
+
+.form_success_list{
+    color: white !important;
+    font-size: 13px;
+}
+
+#err_reset_pass{
+    margin-top: 10px;
+    color: white !important;
+}
+
+
+
+/* NEED VERIFICATION */
+.auth_wrapper{
+    text-align: center;
+    line-height: 1.6;
+    margin: 0 auto;
+    width: 400px;
+    margin-top: 60px;
+    color: white;
+    z-index: 100;
+}
+
+.send_me_email_btn{
+    margin: 30px auto 30px auto;
+    padding: 20px;
+    width: 200px;
+    border-radius: 5px;
+    background: rgb(23,135,252);
+    text-align: center;
+    display: block;
+    cursor: pointer;    
+}
+
+#hidden_confirm_verify{
+    display: none;
+}
+
+.hidden_div{
+    display: none;
+}

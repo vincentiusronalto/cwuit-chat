@@ -17,7 +17,8 @@ async function ifLoggedIn(req,res,next){
         res.locals.myid = req.session.uid;
         res.locals.ifLogin =  true;
     }else{
-        
+        res.locals.MYDATA = {id:'0',name:'Guest',username:'guest',photo:'avatar.png',info_bio:'Hii',info_website:'https://www.example.com',info_instagram:'example',info_facebook:'example',info_twitter:'example',info_country:'example',
+        info_gender:'male',date_created:'0'};
         res.locals.myid = '';
         res.locals.ifLogin = false;
     }

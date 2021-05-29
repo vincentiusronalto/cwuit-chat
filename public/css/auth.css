@@ -154,5 +154,12 @@ h1,h2{
 
 #auth_confirm{
     margin-top: 5px;
-    color: #ff7979;
+}
+
+.success{
+    color: green;
+}
+
+.failed{
+    color: red;
 }

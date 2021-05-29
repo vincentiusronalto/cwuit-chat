@@ -32,41 +32,7 @@
     console.log(MY_PROFILE)
 
     function initProfile(data){
-        /*
-        <div id="profile_right_inside">
-                    <img src="/test/profile_test.png" class="profile_pic_big">
-                    <div><span class="material-icons icon-female">female</span>Roxy</div>
-                    <mention>@Roxy</mention>
-                    
-                    <div id="profile_bio_wrapper">"hi"</div>
-                    <div>
-                        Join : March 13, 2021
-                    </div>
-                    <!-- <div class="profile_single_wrapper">
-                        <div><img src="/icon/loc.png" alt="country" class="profile_icon"></div> 
-                        <div>?</div>
-                    </div> -->
-                    
-                    <!-- <a href="https://www.twitter.com/some" class="profile_single_wrapper">
-                        <div><img src="/icon/tw.png" alt="twitter" class="profile_icon"></div> 
-                        <div>?</div>
-                    </a>
-                    <a href="https://www.website.com" class="profile_single_wrapper">
-                        <div><img src="/icon/web.png" alt="website" class="profile_icon"></div> 
-                        <div>?</div>
-                    </a> -->
-
-                    <div id="profile_social_media_wrapper">
-                        <a href="https://www.facebook.com/some" class="profile_single_wrapper">
-                            <div><img src="/icon/fb.png" alt="facebook" class="profile_icon"></div> 
-                        </a>
-                        <a href="https://www.instagram.com/some" class="profile_single_wrapper">
-                            <div><img src="/icon/ig.png" alt="instagram" class="profile_icon"></div> 
-                        </a>
-                    </div>
-
-        </div>
-        */
+        
 
         //location build
         let loc = '';
@@ -136,15 +102,20 @@
 
         let EditBtn = '';
         //check if me
-        if(data.isme)
+        if(data.isme && data.uid != '0')
         {
-            EditBtn = `<div id="edit_profile_btn">Edit Profile</div>`;
+            EditBtn = `<div id="edit_profile_btn">Edit Profile</div> <a  id="logout_btn" href="/logout">Sign Out</a>`;
+        }else if(data.isme && data.uid == '0' ){
+            EditBtn = `<a  id="signin_btn" href="/login">Sign In</a>`;
         }
-
+        let genderMake = '';
+        if(data.gender){
+            genderMake = `<span class="material-icons icon-${data.gender}">${data.gender}</span>`
+        }
         let profile = `
-        <div id="profile_right_inside">
+        
                     <img src="/upload/user/${data.photo}" class="profile_pic_big">
-                    <div><span class="material-icons icon-${data.gender}">${data.gender}</span>${data.name}</div>
+                    <div>${genderMake}${data.name}</div>
                     <mention>@${data.uname}</mention>
                     
                     <div id="profile_bio_wrapper">"${biomaker}"</div>
@@ -159,7 +130,7 @@
 
                     ${EditBtn}
 
-        </div>
+        
         `
 
         let header = `${data.name}'s profile`;
@@ -170,9 +141,14 @@
 
     initProfile(MY_PROFILE)
 
+    
+
     //edit profile
     document.addEventListener('click',function(e){
-        if(e.target.closest('#edit_profile_btn')){
+        if(e.target.closest('#profile_photo_small_right')){
+            initProfile(MY_PROFILE)
+        }
+        else if(e.target.closest('#edit_profile_btn')){
             if(!document.getElementById('edit_profile_wrapper')){
 
         
@@ -429,9 +405,14 @@
             }
             document.querySelector(`.chat_selector_single[data-id="${dataId}"]`).classList.add('chat_selector_single_active');
             document.getElementById('chat_room_output').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
+            document.getElementById('profile_right_inside').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
             
             
             let data = {type:dataType,id:dataId};
+            if(MY_ID == '0'){
+                document.getElementById('chat_room_input').innerHTML = '<a href="/login">Please Login to start chatting</a>'
+            }
+            
             document.getElementById('chat_room_input').classList.remove('hide')
             socket.emit('chat_load',data)
         }
@@ -457,7 +438,7 @@
 
     socket.emit('user_load');
     socket.on('user_load',function(data){
-        //console.log(data)
+        console.log(data)
         /*
         {
         "topic": [
@@ -509,13 +490,17 @@
         let privatebuild = ``;
         //private
         for(let i = 0; i < data.private.length; i++){
-        
+            //gender check
+            let genderBuild = '';
+            if(data.private[i].info_gender){
+                genderBuild = `<span class="material-icons icon-${data.private[i].info_gender}">${data.private[i].info_gender}</span>`;
+            }
             privatebuild +=
             `
             <div class="chat_selector_single" data-type="private" data-id="${data.private[i].identity}">
                 <img src="/upload/user/${data.private[i].photo}" class="profile_pic_small">
                 <div class="chat_selector_content">
-                    <div><span class="material-icons icon-${data.private[i].info_gender}">${data.private[i].info_gender}</span>${data.private[i].name}</div>
+                    <div>${genderBuild}${data.private[i].name}</div>
                     <div class="chat_selector_history_chat">${data.private[i].lastchat.name} : ${data.private[i].lastchat.text}</div>
                 </div>
             </div>
@@ -528,7 +513,7 @@
     })
 
     socket.on('chat_load', function(data){
-        //console.log(data)
+        console.log(data)
         /*
 
                 {
