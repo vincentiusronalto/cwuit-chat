@@ -40,7 +40,7 @@
             loc = 
             `
             <div class="profile_single_wrapper">
-                <div><img src="/icon/loc.png" alt="country" class="profile_icon"></div> 
+                <div><img src="/icon/loc.png" alt="country" class="profile_icon_loc"></div> 
                 <div>${data.cty}</div>
             </div>
             `;
@@ -428,12 +428,35 @@
         }
 
         else if(e.target.closest('#left_icon_display')){
+            
+
             document.getElementById('chat_topic').classList.toggle('hide')
+            if(document.body.clientWidth <= '700'){
+                console.log('tt')
+                document.getElementById('responsive_black_modal').classList.toggle('hide');
+                document.getElementById('chat_topic').classList.toggle('show');
+            }
         }
         else if(e.target.closest('#right_icon_display')){   
+
+            
             document.getElementById('profile_right_wrapper').classList.toggle('hide')
+            if(document.body.clientWidth <= '700'){
+                console.log('tt')
+                document.getElementById('responsive_black_modal').classList.toggle('hide');
+                document.getElementById('profile_right_wrapper').classList.toggle('show');
+            }
+
+            //if
+        }
+        else if(e.target.closest('#responsive_black_modal')){
+            document.getElementById('responsive_black_modal').classList.add('hide');
+                document.getElementById('profile_right_wrapper').classList.remove('show');
+                document.getElementById('chat_topic').classList.remove('show');
+                
         }
     });
+
 
 
     socket.emit('user_load');

@@ -57,7 +57,8 @@
     }
     body{
         font-family: 'Roboto';
-        background: #dfe4ea;
+        /* background: #dfe4ea; */
+        background: rgb(248,249,250);
         /* background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12); */
         /* background-image: linear-gradient(to right top, #053437, #00486a, #1c519c, #9743a5, #eb1278); */
         /* background-image: linear-gradient(to right top, #d8667d, #cc80c5, #92a6f9, #2cc7ff, #12e0eb); */
@@ -72,10 +73,11 @@
     }
 
     #wrapper_inside{
-        height: 90vh;
+        height: 100vh;
         background-color: white;
         display: flex;
         flex-direction: column;
+        width: 100%;
     }
 
     #top_nav{
@@ -118,6 +120,7 @@
         display: flex;
         flex-direction: column;
         width: 500px;
+        flex-grow: 1;
     }
 
     .chat_image_inside{
@@ -391,6 +394,11 @@
     height: 20px;
     margin-right: 10px;
 }
+.profile_icon_loc{
+    display: block;
+    width: 20px;
+    height: 20px;
+}
 #profile_social_media_wrapper{
     display: flex;
     padding: 10px;
@@ -497,10 +505,7 @@
 
 #sign_btn{
     background: #70a1ff;
-    
-    
     box-sizing: border-box;
-    border: 1px solid rgb(235,235,235);
     padding: 0 5px;
     color: white;
     cursor: pointer;
@@ -543,10 +548,6 @@
     border-top: 1px solid rgb(235,235,235);
 }
 
-
-.hide{
-    display: none !important;
-}
 
 input[type="text"]{
     padding: 10px;

@@ -1,0 +1,58 @@
+#responsive_black_modal{
+  display: none;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
+}
+
+@media only screen and (max-width: 700px) {
+    #responsive_black_modal{
+        display: block;
+    }
+
+    #profile_right_wrapper{
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        z-index: 5;
+    }
+
+    #chat_topic{
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 5;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+.hide{
+    display: none !important;
+}
+
+.show{
+    display: flex !important;
+}

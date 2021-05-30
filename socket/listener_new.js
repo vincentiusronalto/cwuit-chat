@@ -233,7 +233,7 @@ module.exports = function(server,session){
                 topic   : topicList,
                 private : memberR
             }
-            console.log(MYID)
+            // console.log(MYID)
             io.to(socketId).emit('user_load', result);
         });
 
@@ -241,7 +241,7 @@ module.exports = function(server,session){
         // CHAT
 
         socket.on('chat_load', async function(data){
-            console.log(data);
+            // console.log(data);
             let type = data.type;
             let id = data.id;
             let inputId = id;
@@ -261,7 +261,7 @@ module.exports = function(server,session){
                     
                 }
             }
-            console.log('idt ', profileId)
+            // console.log('idt ', profileId)
             //if topic -> my profile
             
             //if private chat -> their profile
@@ -302,7 +302,7 @@ module.exports = function(server,session){
                     let dbTopic = await db.query(sqlChat,[inputId]);
                     chat = dbTopic.rows;
                 }
-                console.log(profile)
+                // console.log(profile)
                 let result = {chat,profile};
                 
                 io.to(socketId).emit('chat_load', result);
