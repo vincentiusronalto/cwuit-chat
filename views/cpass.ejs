@@ -27,12 +27,12 @@
                     
 
                 <div id="login_signup_action">
-                                    
-                    <input id="auth_csrf_val" type="hidden" name="_csrf" value="<%= csrf %>" />  
+                    <input id="csrfId" type="hidden" name="_csrf" value="<%= csrf %>" />  
+                    
                     <div id="login_wrapper" class="auth_single_wrapper auth_single_active">
-                            <input class="auth_input" type="text" id="input_login_uname_email" placeholder="Username/Email">
-                            <input class="auth_input" type="password" id="input_login_pass" placeholder="Password">
-                        <div id="login_btn" class="auth_submit_btn">Login</div>
+                            <input autocomplete="new-password" class="auth_input" type="password" id="password" placeholder="New Password">
+                            <input autocomplete="new-password" class="auth_input" type="password" id="confirm_password" placeholder="Confirm Password">
+                        <div id="send_forgot_pass_btn" class="auth_submit_btn">Change My Password</div>
                     </div>
         
 
@@ -51,7 +51,60 @@
         </div>
 
 
-<script src="/js/auth.js"></script>
+<!-- <script src="/js/auth.js"></script> -->
+<script>
+
+//function to send ajax for request forgot password
+
+let changePassBtn = document.getElementById("send_forgot_pass_btn");
+changePassBtn.addEventListener("click", sendEmail);
+
+function sendEmail(){
+
+    let urlParams = new URLSearchParams(window.location.search);
+    
+    let token              = urlParams.get('token');
+    let csrfVal            = document.getElementById("csrfId").value;
+    let passwordVal        = document.getElementById("password").value.trim();
+    let confirmpasswordVal = document.getElementById("confirm_password").value.trim();
+    
+    let sendString = `password=${passwordVal}&confirm_password=${confirmpasswordVal}&token=${token}`;
+    console.log(sendString)
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            let check = JSON.parse(this.responseText);
+            if(check.success == false){
+                // document.getElementById("err_reset_pass").innerHTML = check.errorMsg;
+                // document.getElementById("err_reset_pass").classList.remove("hidden_div");
+
+                note = `<span class="failed">${check.errorMsg}<span>`;
+            }else{
+                // document.getElementById("success_reset_pass").classList.remove("hidden_div");
+                // window.location.href = "/login";
+
+                note = `<span class="success">Successfuly Changing Password, To Login...<span>`;
+                        setTimeout(function(){window.location.href = "/chat";},'800');
+            }
+
+            document.getElementById('auth_confirm').innerHTML = "";
+            document.getElementById('auth_confirm').innerHTML = note;
+            document.getElementById('auth_confirm').style.display = 'block';
+            changePassBtn.innerHTML = 'Login';
+          }
+      };
+      xhttp.open("POST", "create_new_password", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhttp.setRequestHeader('X-CSRF-Token',csrfVal);
+      xhttp.send(sendString);
+}
+
+// document.getElementsByClassName("form_input")[0].addEventListener("keyup", checkForm);
+// document.getElementsByClassName("form_input")[1].addEventListener("keyup", checkForm);
+
+
+
+</script>
 
 </body>
 

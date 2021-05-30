@@ -34,7 +34,7 @@
                     let note = '';
                     if(success){
                         note = `<span class="success">Successful login, Entering...<span>`;
-                        setTimeout(function(){window.location.href = "/chat";},'1500');
+                        setTimeout(function(){window.location.href = "/chat";},'800');
                         
                     }else{
                         note = `<span class="failed">Wrong email/username or password<span>`;

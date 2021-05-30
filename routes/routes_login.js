@@ -393,12 +393,6 @@ router.get("/auth_create_new_password", async function(req,res,next){
             }
             
 
-    }else{
-        
-        res.send({
-            success  : false,
-            errorMsg : 'not valid user, please request a password reset'
-        })
     }
     
     }
@@ -513,7 +507,8 @@ router.get("/auth_req_new_verify_emai", async function(req,res,next){
 
 router.get("/change_password", async function(req,res,next){
 
-    res.render('change_password',{mainnav:'support', csrf:req.csrfToken()});
+    // res.render('change_password',{mainnav:'support', csrf:req.csrfToken()});
+    res.render('cpass',{mainnav:'support', csrf:req.csrfToken()});
 
     // try{
     //     if(req.session.CreateNewPasswordUID){
@@ -530,66 +525,102 @@ router.get("/change_password", async function(req,res,next){
     // }
 })
 
-router.post("/create_new_password", async function(req,res,next){
-    
+router.post("/create_new_password", async function(req,res,next){    
     try{
-        if(req.session.CreateNewPasswordUIDTransfer){
-            //get password and confirm_password from post body
-            let password         = xssFilters.inHTMLData(req.body.password);
-            let confirm_password = xssFilters.inHTMLData(req.body.confirm_password);
-            let userId = req.session.CreateNewPasswordUIDTransfer;
-            req.session.CreateNewPasswordUIDTransfer = false;
-            if(password.length < 7){
-                res.send({
-                    success : false,
-                    errorMsg :'change password failed - password too short, min 7 chars'
-                });
-                
-            }
+        // return 0;
+        //get password and confirm_password from post body
+        let password         = xssFilters.inHTMLData(req.body.password);
+        let confirm_password = xssFilters.inHTMLData(req.body.confirm_password);
+        let token            = xssFilters.inHTMLData(req.body.token);
 
 
-            //check if password === confirm_password
-            else if(password != confirm_password){
-                res.send({
-                    success  : false,
-                    errorMsg : 'change password failed - wrong confirm field'
-                })
-                // res.send('change password failed - wrong confirm field');
-            }
-            else{
-                //all-passed change user password
-                //first encrypt the password
-                const hashPassword = await bcrypt.hash(password,saltRounds);
+        console.log(password,confirm_password,token)
 
-                //second save to db
-                const dbUpdateUserPassword = await db.query('UPDATE users SET password = $1 WHERE id = $2', [hashPassword, userId]);
-
-                
-                
-
-                // res.send('success :O');
-                res.send({
-                    success  : true,
-                    errorMsg : 'success'
-                })
-            }
-            
-
-    }else{
-        
+        if(password.length < 7){
         res.send({
-            success  : false,
-            errorMsg : 'not valid user, please request a password reset'
+        success : false,
+        errorMsg :'change password failed - password too short, min 7 chars'
+        });
+
+        }
+
+
+        //check if password === confirm_password
+        else if(password != confirm_password){
+        res.send({
+        success  : false,
+        errorMsg : 'change password failed - wrong confirm field'
         })
+        // res.send('change password failed - wrong confirm field');
+        }
+        else{
+
+
+        const tokenArr = token.split("-");
+        const token_hash = tokenArr[0];
+        const token_check = tokenArr[1];
+
+        //get token from database
+        //check if token2(back is same && not expired)
+        const dbGetToken = await db.query('SELECT id, token_hash, token_check, user_id, available FROM token_request WHERE token_check = $1 AND expiration_date > NOW()', [token_check]);
+            console.log(token_check)
+        let checker = dbGetToken.rows.length;
+
+        if(checker == 0){
+
+
+        res.send({
+        success  : false,
+        errorMsg : 'wrong/expired token, please create new request'
+        })
+
+        }
+        else{
+        const tokenId = dbGetToken.rows[0].id;
+        const userId = dbGetToken.rows[0].user_id;
+        const available = dbGetToken.rows[0].available;
+
+        //check if crypt and token 1 is same
+        const hashMatch = await bcrypt.compare(token_hash, dbGetToken.rows[0].token_hash);
+
+
+
+        console.log(token_hash, dbGetToken.rows[0].token_hash, hashMatch)
+        if(!available){
+        res.send({
+        success  : false,
+        errorMsg : 'already changed password, please create new request'
+        })
+        }
+
+        else if(hashMatch){
+        //if compare true update user
+
+        //all-passed change user password
+        //first encrypt the password
+        const hashPassword = await bcrypt.hash(password,saltRounds);
+
+        //second save to db
+        const dbUpdateUserPassword = await db.query('UPDATE users SET password = $1 WHERE id = $2', [hashPassword, userId]);
+
+        const dbUpdateTokenFalse = await db.query('UPDATE token_request SET available = FALSE WHERE id = $1', [tokenId]);
+        // res.send('success :O');
+        res.send({
+        success  : true,
+        errorMsg : 'success'
+        })
+        }else{
+        res.send({
+        success  : false,
+        errorMsg : 'wrong token'
+        })
+        }
+        }
+        }
     }
-    
-    }
-    
-    
     catch(err){
         console.log(err);
     }
-    
 });
 
 module.exports = router;

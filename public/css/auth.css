@@ -24,20 +24,15 @@ h1,h2{
     margin-bottom: 10px;
 }
 /* AUTH PAGES */
-#auth_ejs_wrapper{
-    
+#auth_ejs_wrapper{  
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    
 }
 
 #auth_ejs{
-    background: white;
-  /* width: 500px; */
-  /* max-width: 902px; */
-  /* width: 100%; */
+  background: white;
   height: 420px;
   box-sizing: border-box;
   padding: 20px;
@@ -70,8 +65,8 @@ h1,h2{
     outline: none;
     margin-top: 10px;
     margin-bottom: 10px;
-    
 }
+
 .auth_input:focus{
     border: 1px solid #6bb5f7;
 }
@@ -106,16 +101,12 @@ h1,h2{
 }
 
 #auth_link_to_other{
-    
     display: flex;
     justify-content: center;
     color: rgb(170,170,170);
-    
-
 }
 
 .auth_single_link{
-    
     /* padding: 10px; */
     margin-right: 10px;
     margin-left: 10px;
@@ -129,11 +120,8 @@ h1,h2{
 }
 
 .auth_link_active{
-    /* border-bottom: 1px solid #6bb5f7; */
     color: #6bb5f7;
-    /* color: white; */
     padding-bottom: 5px;
-    /* background: #6bb5f7; */
 }
 
 .close{
