@@ -407,7 +407,7 @@
             document.getElementById('chat_room_output').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
             document.getElementById('profile_right_inside').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
             
-            
+
             let data = {type:dataType,id:dataId};
             if(MY_ID == '0'){
                 document.getElementById('chat_room_input').innerHTML = '<a href="/login">Please Login to start chatting</a>'
@@ -431,7 +431,7 @@
             
 
             document.getElementById('chat_topic').classList.toggle('hide')
-            if(document.body.clientWidth <= '700'){
+            if(document.body.clientWidth <= '800'){
                 console.log('tt')
                 document.getElementById('responsive_black_modal').classList.toggle('hide');
                 document.getElementById('chat_topic').classList.toggle('show');
@@ -441,7 +441,7 @@
 
             
             document.getElementById('profile_right_wrapper').classList.toggle('hide')
-            if(document.body.clientWidth <= '700'){
+            if(document.body.clientWidth <= '800'){
                 console.log('tt')
                 document.getElementById('responsive_black_modal').classList.toggle('hide');
                 document.getElementById('profile_right_wrapper').classList.toggle('show');
@@ -457,6 +457,40 @@
         }
     });
 
+
+    class Stripper
+    {
+    constructor() {
+        this._target = document.createElement("div")
+    }
+    strip(html) {
+        this._target.innerHTML = html
+        return this._target.textContent || this._target.innerText || ""
+    }
+    }
+
+    function sliceToDot(file_name){
+        // var file_name = 'Screen Shot 2015-06-16 at 8.26.45 AM.png';
+        let result;
+        var file_ext = file_name.substring(file_name.lastIndexOf('.')+1);
+
+        let maxChar = 20;
+        let untilChar = maxChar - 4;
+        if (file_name.length > maxChar){ 
+            result = file_name.substring(0,untilChar)+'...';
+        } else if(file_name == ''){
+            return 'send an image';
+        }else{
+            return file_name;
+        }
+        
+        return result;
+    }
+    
+
+
+    const stripper = new Stripper()
+    //console.log(stripper.strip('<div><div>hii</br>hiii</div></div>'))
 
 
     socket.emit('user_load');
@@ -485,12 +519,67 @@
                     "identity": "1_2",
                     "lastchat": {
                         "name": "vrozen",
-                        "text": "hi 2 from 1"
+                        "text": "hi 2 from 1",
+                        "chatid": 0
                     }
                 }
             ]
         }
         */
+
+
+        //SORT PRIVATE CHAT
+        let privateNotOrdered = [];
+
+        // copy the array
+        for (let i = 0; i < data.private.length; i++) {
+            privateNotOrdered[i] = data.private[i];
+        }
+
+        // make the sorted
+        // total = sorted + nochat
+        let noChat = [];
+        for(let i = 0; i < privateNotOrdered.length; i++){
+//             console.log(privateNotOrdered[i].lastchat.chatid)
+            if(privateNotOrdered[i].lastchat.chatid == 0){
+                noChat.push(privateNotOrdered[i]);
+
+                //make value null
+                privateNotOrdered[i] = null;
+
+            }
+
+
+            //noChat.p
+        }
+
+
+
+let filteredNoChat = privateNotOrdered.filter(function (el) {
+  return el != null;
+});
+
+// console.log(filteredNoChat)
+
+//sort array
+function compareChatId( a, b ) {
+  if ( a.lastchat.chatid < b.lastchat.chatid ){
+    return 1;
+  }
+  if (a.lastchat.chatid > b.lastchat.chatid ){
+    return -1;
+  }
+  return 0;
+}
+
+let filteredChat = filteredNoChat.sort( compareChatId );
+// console.log(filteredChat)
+
+//combine array
+//var children = hege.concat(stale); 
+
+let combinedPrivate = filteredChat.concat(noChat)
+
 
         let topicWrapper = document.getElementById('chat_topic_wrapper');
         let privateWrapper = document.getElementById('chat_private_wrapper');
@@ -504,7 +593,7 @@
                 <img src="/upload/topic_pic/${data.topic[i].image}" class="profile_pic_small">
                 <div class="chat_selector_content">
                     <div>${data.topic[i].name}</div>
-                    <div class="chat_selector_history_chat">${data.topic[i].lastchat.name} : ${data.topic[i].lastchat.text}</div>
+                    <div class="chat_selector_history_chat"><span class="chat_selection_name_blue">${data.topic[i].lastchat.name}</span> : ${data.topic[i].lastchat.text}</div>
                 </div>
             </div>
             `
@@ -512,19 +601,23 @@
 
         let privatebuild = ``;
         //private
-        for(let i = 0; i < data.private.length; i++){
+        for(let i = 0; i < combinedPrivate.length; i++){
             //gender check
             let genderBuild = '';
-            if(data.private[i].info_gender){
-                genderBuild = `<span class="material-icons icon-${data.private[i].info_gender}">${data.private[i].info_gender}</span>`;
+            if(combinedPrivate[i].info_gender){
+                genderBuild = `<span class="material-icons icon-${combinedPrivate[i].info_gender}">${combinedPrivate[i].info_gender}</span>`;
             }
+
+            //stripper.strip();
+            let lastchat = sliceToDot(stripper.strip(combinedPrivate[i].lastchat.text));
+            
             privatebuild +=
             `
-            <div class="chat_selector_single" data-type="private" data-id="${data.private[i].identity}">
-                <img src="/upload/user/${data.private[i].photo}" class="profile_pic_small">
+            <div class="chat_selector_single" data-type="private" data-id="${combinedPrivate[i].identity}">
+                <img src="/upload/user/${combinedPrivate[i].photo}" class="profile_pic_small">
                 <div class="chat_selector_content">
-                    <div>${genderBuild}${data.private[i].name}</div>
-                    <div class="chat_selector_history_chat">${data.private[i].lastchat.name} : ${data.private[i].lastchat.text}</div>
+                    <div class="chat_selection_name_blue">${genderBuild}${combinedPrivate[i].name}</div>
+                    <div class="chat_selector_history_chat">${lastchat}</div>
                 </div>
             </div>
             `
@@ -620,7 +713,7 @@
             `<div class="chat_content_single">
                 <img src="/upload/user/${data.chat[i].photo}" class="profile_pic_small">
                 <div class="chat_content_content">
-                    <div>${data.chat[i].name}</div>
+                    <div class="chat_content_name">${data.chat[i].name}</div>
                     <div class="chat_selector_history_chat">${data.chat[i].text}</div>
                     <div>${imageBuild}</div>
                 </div>
@@ -820,7 +913,7 @@
         `<div class="chat_content_single" data-checkId="${data.checkId}">
             <img src="/upload/user/${MY_PHOTO}" class="profile_pic_small">
             <div class="chat_content_content">
-                <div>${MY_NAME}</div>
+                <div class="chat_content_name">${MY_NAME}</div>
                 <div class="chat_selector_history_chat">${data.text}</div>
                 <div>${pic}</div>
             </div>
@@ -845,6 +938,12 @@
         let regex = /^\s*(?:<br\s*\/?\s*>)+|(?:<br\s*\/?\s*>)+\s*$/gi;
         let final_text2 = final_text.replace(regex, '');
         final_text2 = final_text2.replace(/^(?:&nbsp;|\s)+|(?:&nbsp;|\s)+$/ig,'');
+
+        //clear <div></div>
+        // let regex2 = /^\s*(?:<div\s*\/?\s*>)+|(?:<div\s*\/?\s*>)+\s*$/gi;
+        let final_text3 = final_text2.replace(/^(?:<div>|\s)+|(?:<\/div>|\s)+$/ig, '');
+        console.log(final_text3);
+
         //chat 
         
         //pic
@@ -884,40 +983,122 @@
     }
 
     socket.on('chat_send',function(data){
+        console.log(data)
+
+        /*
+        <div class="chat_selector_single chat_selector_single_active" data-type="private" data-id="1_2">
+                        <img src="/upload/user/avatar.png" class="profile_pic_small">
+                        <div class="chat_selector_content">
+                            <div><span class="material-icons icon-male">male</span>someone1</div>
+                            <div class="chat_selector_history_chat">vrozen : send an image</div>
+                        </div>
+                    </div>
+        */
 
     /*
-    cdate: "2021-05-07T15:46:54.684Z"
-    chatid: "8"
-    cpic: null
-    ctext: "yoiiii"
-    ctopicId: "1"
-    ctype: "daily"
-    uid: "3"
-    uname: "vronalto"
-    uphoto: "user.jpeg"
-    username: "vronalto"
+    //topic
+    {
+    "uid": "1",
+    "uphoto": "img-1622431096423.jpeg",
+    "uname": "vrozen",
+    "username": "vrozen",
+    "chatid": "13",
+    "cdate": "2021-05-31T04:38:30.745Z",
+    "ctext": "lol",
+    "cpic": null,
+    "ctopicId": "1",
+    "ctype": "topic",
+    "checkId": "162243590970625671"
+    }
+
+    //private
+    {
+    "uid": "1",
+    "uphoto": "img-1622431096423.jpeg",
+    "uname": "vrozen",
+    "username": "vrozen",
+    "chatid": "14",
+    "cdate": "2021-05-31T04:39:14.336Z",
+    "ctext": "good",
+    "cpic": null,
+    "ctopicId": "1_2",
+    "ctype": "private",
+    "checkId": "162243595333356042"
+    }
+
+
+
     */
     //myid
     // let chatActiveTopicId = '1';
     // let chatActiveType = 'topic';
 
-    // let balloon;
-    // let cdata;
-
+    //get ID/type from active
     let chatActive = document.querySelector('.chat_selector_single_active');
     //topicId 
     let topicId = chatActive.getAttribute('data-id');
     //type
     let type = chatActive.getAttribute('data-type');
 
+    console.log(type, topicId) //private 1_2
+
+    //make LEFT chat selection go up
+    // wrapper id : chat_private_wrapper
+    // element to move : document.querySelector('.chat_selector_single[data-type="private"][data-id="1_2"]')
+    
+    
+
+
+
+    if(data.ctype == 'private'){
+        //check if chat for us
+        let idArr = data.ctopicId.split('_');
+        if(idArr.includes(MY_ID)){
+        let selector = `.chat_selector_single[data-type="private"][data-id="${data.ctopicId}"]`;
+        let selectorF = `.chat_selector_single[data-type="private"]`;
+
+        // The original
+        let selectMove = document.querySelector(selector);
+        let firstChild = document.querySelector(selectorF);
+
+        // The copy
+        let copyMove = selectMove.cloneNode(true);
+
+        //remove original
+        
+
+        
+        // Insert into the DOM
+        let privateWrapper = document.getElementById("chat_private_wrapper");    // Get the <ul> element to insert a new node
+
+        console.log(copyMove)
+        console.log(selectMove)
+        privateWrapper.insertBefore(copyMove, firstChild);
+        selectMove.remove();
+
+        //change content 
+        //chat_selector_single[data-type="private"]
+
+        let changeContent = document.querySelector(`.chat_selector_single[data-type="private"][data-id="${data.ctopicId}"] .chat_selector_history_chat`)
+
+        changeContent.textContent = data.ctext;
+
+        }
+
+    }else if(data.ctype = 'topic'){
+
+        //change content
+        //<div class="chat_selector_history_chat">${data.topic[i].lastchat.name} : ${data.topic[i].lastchat.text}</div>
+        let changeContent = document.querySelector(`.chat_selector_single[data-type="topic"][data-id="${data.ctopicId}"] .chat_selector_history_chat`)
+        
+
+        changeContent.textContent = data.uname +' : '+ data.ctext;
+    }
+
+
+    //print chat on CENTER content
     if(topicId == data.ctopicId && type == data.ctype){
         if(data.uid == MY_ID){
-            // balloon = 'chat_room_balloon_gray';
-            // cdata = 'chat_data_gray';
-            // chat is mine - check checkId and correct Sending
-            // checkId : checkId,
-            // chatid : returnId,
-            // cdate : returnDate,
 
             let checkChatId = document.querySelector(`.chat_content_single[data-checkId="${data.checkId}"]`);
             checkChatId.setAttribute("data-chatId",data.chatid);
@@ -928,10 +1109,7 @@
 
         else
         {
-        // balloon = 'chat_room_balloon_blue';
-        // cdata = 'chat_data_blue';
-            
-        
+        console.log('partner trigger')
         let pic = '';
         
         if(data.cpic){
@@ -956,19 +1134,7 @@
         // let dates = G_dateFormat(data.cdate);
         let dates = moment(data.cdate).fromNow();
         
-        // let chat = 
-        // `
-        // <div class="chat_room_single" data-chatId="${data.chatid}">
-        //     <img src="/upload/user/${data.uphoto}" class="chat_room_pp" alt="chat_profile_picture">
-        //     <div class="chat_room_single_content ${balloon}">
-        //         <div class="chat_room_data ${cdata}">${data.uname}</div>
-        //         <div class="">${data.ctext}</div>
-        //         <div>${pic}</div> 
-        //         <div class="chat_date_data"><div>${dates}</div></div>
-        //     </div>
-        // </div>        
-        // `;
-
+  
         let chat =
         `<div class="chat_content_single" data-chatId="${data.chatid}">
             <img src="/upload/user/${data.uphoto}" class="profile_pic_small">

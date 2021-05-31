@@ -217,12 +217,14 @@ module.exports = function(server,session){
 
                 memberR[i].identity = identity;
 
-                let dbSingleMemberChat = await db.query(`SELECT u.name, c.text FROM chat_data_private c, users u WHERE identity = $1     AND c.sender_id = u.id ORDER BY c.id DESC LIMIT 1`,[identity]);
+                let dbSingleMemberChat = await db.query(`SELECT u.name, c.text, c.id AS chatid FROM chat_data_private c, users u WHERE identity = $1     AND c.sender_id = u.id ORDER BY c.id DESC LIMIT 1`,[identity]);
                 memberR[i].lastchat = dbSingleMemberChat.rows[0];
                 if(!dbSingleMemberChat.rows[0]){
                     memberR[i].lastchat = {
                         name : "hi",
-                        text : "click here to chat"
+                        text : "click here to chat",
+                        chatid : 0
+
                     }
                 }
                 
@@ -298,7 +300,7 @@ module.exports = function(server,session){
                     profile.type = 'private'
                     let sqlChat = `SELECT c.id, c.sender_id, c.receiver_id, c.identity, 
                     c.date_created, c.read_status, c.image, c.text, u.name, u.username, u.photo 
-                    FROM chat_data_private c , users u WHERE identity = $1 AND u.id = c.sender_id`;
+                    FROM chat_data_private c , users u WHERE identity = $1 AND u.id = c.sender_id ORDER BY c.date_created ASC`;
                     let dbTopic = await db.query(sqlChat,[inputId]);
                     chat = dbTopic.rows;
                 }
@@ -311,10 +313,11 @@ module.exports = function(server,session){
             }
             
         });
-
+        
 
         socket.on('chat_send', async function(data){
             try{
+                
                 //console.log(data)
                 /*
                 
@@ -360,12 +363,14 @@ module.exports = function(server,session){
                     
                 }else{ //private
                     pic = await uploadImage2(data.img,'private_chat');
-                    let sql = `INSERT INTO chat_data_personal 
+                    let sql = `INSERT INTO chat_data_private 
                     (sender_id, text, receiver_id, identity, date_created, 
                     read_status, image, id_check)
                     VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7) RETURNING id, date_created
                     `;
-                    let identityArr = data.topicId;
+                    // let identityArr = data.topicId;
+                    let identity = data.topicId;
+                    let identityArr = identity.split('_');
                     let receiverId;
                     for(let i = 0 ; i < identityArr.length; i++){
                         if(MYID != identityArr[i]){
@@ -374,7 +379,8 @@ module.exports = function(server,session){
                     }
                     
                     dbInsert = await db.query(sql, [MYID,data.text,receiverId,data.topicId, zero, pic, checkId]);
-                    
+                    console.log([MYID,data.text,receiverId,data.topicId, zero, pic, checkId])
+                    //[ '2', 'hiiiiiiiiii', '_', '1_2', '0', null, '16224318285955642' ]
                 }
                 //get sender data to present in ui
                 let sqlSender = `SELECT id AS uid, name, username, photo FROM users WHERE id = $1 LIMIT 1`;
@@ -395,6 +401,8 @@ module.exports = function(server,session){
                     ctype : data.type,
                     checkId : checkId
                 }
+
+                
                 socket.emit('chat_send', senderData);
             }catch(err){
                 console.log(err);

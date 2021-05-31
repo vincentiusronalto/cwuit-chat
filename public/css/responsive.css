@@ -15,7 +15,20 @@
   animation-duration: 0.4s
 }
 
-@media only screen and (max-width: 700px) {
+
+
+@media only screen and (max-width: 1000px) {
+    #content_chat{
+        display: flex;
+        flex-direction: column;
+        width: 350px;
+        min-width: 350px;
+        flex-grow: 1;
+    }
+}
+
+
+@media only screen and (max-width: 800px) {
     #responsive_black_modal{
         display: block;
     }
