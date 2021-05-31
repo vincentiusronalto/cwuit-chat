@@ -136,12 +136,20 @@
         font-size: 16px;
         display: flex;
         padding: 10px;
+        padding-bottom: 25px;
         align-items: flex-start;
         border-bottom: 1px solid rgb(235,235,235);
     }
 
     .chat_content_content{
         padding-left: 10px;
+        min-width: 10px;
+        flex-grow: 1;
+    }
+
+    .chat_content_name_date{
+        display: flex;
+        padding-bottom: 6px;
     }
 
     .chat_content_name{
@@ -251,6 +259,7 @@
     .chat_selector_history_chat{
         /* color: rgb(110,110,110); */
         color: black;
+        overflow-wrap: break-word;
     }
 
     /* !- chat left selector */
@@ -290,7 +299,7 @@
     box-sizing: border-box;
     padding: 10px 5px;
     /* background:rgb(235,235,235); */
-    border-top: 1px solid rgb(235,235,235);
+    /* border-top: 1px solid rgb(235,235,235); */
     
 }
 #chat_room_input_box{
@@ -363,6 +372,9 @@
     margin-top: 5px;
     color: rgb(129,129,134);
     margin-left: auto;
+    /* width: 90px; */
+    /* min-width: 90px; */
+    text-align: right;
 
 }
 /* PROFILE */

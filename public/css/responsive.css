@@ -21,8 +21,9 @@
     #content_chat{
         display: flex;
         flex-direction: column;
-        width: 350px;
-        min-width: 350px;
+        /* width: 350px; */
+        /* min-width: 350px; */
+        min-width: 10px;
         flex-grow: 1;
     }
 }

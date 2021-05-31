@@ -33,7 +33,7 @@
 
     function initProfile(data){
         
-
+        console.log(data)
         //location build
         let loc = '';
         if(data.cty){
@@ -104,7 +104,7 @@
         //check if me
         if(data.isme && data.uid != '0')
         {
-            EditBtn = `<div id="edit_profile_btn">Edit Profile</div> <a  id="logout_btn" href="/logout">Sign Out</a>`;
+            EditBtn = `<div id="edit_profile_btn">Edit My Profile</div> <a  id="logout_btn" href="/logout">Sign Out</a>`;
         }else if(data.isme && data.uid == '0' ){
             EditBtn = `<a  id="signin_btn" href="/login">Sign In</a>`;
         }
@@ -133,7 +133,14 @@
         
         `
 
-        let header = `${data.name}'s profile`;
+        // let header = `${data.name}'s profile`;
+        let header = '';
+        if(data.isme){
+            header = 'My Profile';
+        }else{
+            header = `${data.name}'s profile`;
+        }
+        
         
         document.getElementById('profile_header').innerHTML = header;
         document.getElementById('profile_right_inside').innerHTML = profile;
@@ -234,7 +241,7 @@
             <div id="submit_change_profile">Submit Change</div> 
         </div>
         `
-        document.getElementById('info_which_chat').innerHTML = 'Edit Profile';
+        document.getElementById('info_which_chat').innerHTML = 'Edit My Profile';
         document.getElementById('chat_room_output').innerHTML = editProfilePage;
         console.log(document.getElementById('change_profile_pic_hidden').value)
         }
@@ -628,6 +635,8 @@ let combinedPrivate = filteredChat.concat(noChat)
         privateWrapper.innerHTML = privatebuild;
     })
 
+   
+
     socket.on('chat_load', function(data){
         console.log(data)
         /*
@@ -713,11 +722,15 @@ let combinedPrivate = filteredChat.concat(noChat)
             `<div class="chat_content_single">
                 <img src="/upload/user/${data.chat[i].photo}" class="profile_pic_small">
                 <div class="chat_content_content">
-                    <div class="chat_content_name">${data.chat[i].name}</div>
+                    <div class="chat_content_name_date">
+                        <div class="chat_content_name">${data.chat[i].name}</div>
+                        <div class="chat_date_data"><div>${moment(data.chat[i].date_created).fromNow()}</div></div> 
+                    </div>
+                    
                     <div class="chat_selector_history_chat">${data.chat[i].text}</div>
                     <div>${imageBuild}</div>
                 </div>
-                <div class="chat_date_data"><div>${moment(data.chat[i].date_created).fromNow()}</div></div> 
+                
             </div>`
         }
         document.getElementById('info_which_chat').innerHTML = info;
@@ -983,7 +996,7 @@ let combinedPrivate = filteredChat.concat(noChat)
     }
 
     socket.on('chat_send',function(data){
-        console.log(data)
+        console.log('triggered')
 
         /*
         <div class="chat_selector_single chat_selector_single_active" data-type="private" data-id="1_2">
@@ -1040,7 +1053,7 @@ let combinedPrivate = filteredChat.concat(noChat)
     //type
     let type = chatActive.getAttribute('data-type');
 
-    console.log(type, topicId) //private 1_2
+    
 
     //make LEFT chat selection go up
     // wrapper id : chat_private_wrapper
@@ -1071,8 +1084,7 @@ let combinedPrivate = filteredChat.concat(noChat)
         // Insert into the DOM
         let privateWrapper = document.getElementById("chat_private_wrapper");    // Get the <ul> element to insert a new node
 
-        console.log(copyMove)
-        console.log(selectMove)
+        
         privateWrapper.insertBefore(copyMove, firstChild);
         selectMove.remove();
 

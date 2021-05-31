@@ -177,7 +177,7 @@ router.post("/paypal_pay", async function(req, res, next){
             gemsAmount : gemsAmount,
             uid        : req.session.userid
         };
-        console.log(price)
+        // console.log(price)
     
         if(process.env.STATE == 'D'){
             url = "http://localhost:3000/";
@@ -257,7 +257,7 @@ router.get('/paypal_success', async function(req,res,next){
             console.log(error.stack);
             // throw error;
         } else {
-            console.log(JSON.stringify(payment));
+            // console.log(JSON.stringify(payment));
             /*
             {"id":"PAYID-L7NPW6I513707750J5048355","intent":"sale","state":"approved","cart":"0MX71491TY2056739","payer":{"payment_method":"paypal","status":"VERIFIED","payer_info":{"email":"vincentius.ronalto.d-buyer@gmail.com","first_name":"test","last_name":"buyer","payer_id":"6CWMMMPDDT9KU","shipping_address":{"recipient_name":"test buyer","line1":"1 Main St","city":"San Jose","state":"CA","postal_code":"95131","country_code":"US"},"country_code":"US"}},"transactions":[{"amount":{"total":"100.00","currency":"USD","details":{"subtotal":"100.00","shipping":"0.00","insurance":"0.00","handling_fee":"0.00","shipping_discount":"0.00","discount":"0.00"}},"payee":{"merchant_id":"X5AGVY5SQS6E6","email":"vincentius.ronalto.d-facilitator@gmail.com"},"description":"gems payment","item_list":{"items":[{"name":"10 cwuit gems","sku":"up2sl8k","price":"100.00","currency":"USD","tax":"0.00","quantity":1}],"shipping_address":{"recipient_name":"test buyer","line1":"1 Main St","city":"San Jose","state":"CA","postal_code":"95131","country_code":"US"}},"related_resources":[{"sale":{"id":"9RB78903VG745915H","state":"completed","amount":{"total":"100.00","currency":"USD","details":{"subtotal":"100.00","shipping":"0.00","insurance":"0.00","handling_fee":"0.00","shipping_discount":"0.00","discount":"0.00"}},"payment_mode":"INSTANT_TRANSFER","protection_eligibility":"ELIGIBLE","protection_eligibility_type":"ITEM_NOT_RECEIVED_ELIGIBLE,UNAUTHORIZED_PAYMENT_ELIGIBLE","transaction_fee":{"value":"3.20","currency":"USD"},"parent_payment":"PAYID-L7NPW6I513707750J5048355","create_time":"2020-12-17T06:32:56Z","update_time":"2020-12-17T06:32:56Z","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/sale/9RB78903VG745915H","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v1/payments/sale/9RB78903VG745915H/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAYID-L7NPW6I513707750J5048355","rel":"parent_payment","method":"GET"}]}}]}],"failed_transactions":[],"create_time":"2020-12-17T06:32:25Z","update_time":"2020-12-17T06:32:56Z","links":[{"href":"https://api.sandbox.paypal.com/v1/payments/payment/PAYID-L7NPW6I513707750J5048355","rel":"self","method":"GET"}],"httpStatusCode":200}
             */

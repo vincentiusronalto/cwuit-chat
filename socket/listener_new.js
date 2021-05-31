@@ -235,7 +235,7 @@ module.exports = function(server,session){
                 topic   : topicList,
                 private : memberR
             }
-            // console.log(MYID)
+            
             io.to(socketId).emit('user_load', result);
         });
 
@@ -243,7 +243,7 @@ module.exports = function(server,session){
         // CHAT
 
         socket.on('chat_load', async function(data){
-            // console.log(data);
+            
             let type = data.type;
             let id = data.id;
             let inputId = id;
@@ -263,7 +263,7 @@ module.exports = function(server,session){
                     
                 }
             }
-            // console.log('idt ', profileId)
+            
             //if topic -> my profile
             
             //if private chat -> their profile
@@ -304,7 +304,7 @@ module.exports = function(server,session){
                     let dbTopic = await db.query(sqlChat,[inputId]);
                     chat = dbTopic.rows;
                 }
-                // console.log(profile)
+                
                 let result = {chat,profile};
                 
                 io.to(socketId).emit('chat_load', result);
@@ -354,7 +354,7 @@ module.exports = function(server,session){
 
                 if(data.type == 'topic'){
                     pic = await uploadImage2(data.img,'topic_chat');
-                    //console.log(pic)
+                    
                     let sql = `INSERT INTO chat_data_topic (id_sender, text, date_created, id_topic, image, id_check)
                     VALUES ($1, $2,  NOW(), $3, $4, $5) RETURNING id, date_created
                     `;
@@ -379,7 +379,7 @@ module.exports = function(server,session){
                     }
                     
                     dbInsert = await db.query(sql, [MYID,data.text,receiverId,data.topicId, zero, pic, checkId]);
-                    console.log([MYID,data.text,receiverId,data.topicId, zero, pic, checkId])
+                    
                     //[ '2', 'hiiiiiiiiii', '_', '1_2', '0', null, '16224318285955642' ]
                 }
                 //get sender data to present in ui
@@ -401,8 +401,9 @@ module.exports = function(server,session){
                     ctype : data.type,
                     checkId : checkId
                 }
-
-                
+                console.log('send')
+                console.log(senderData)
+                console.log('chat')
                 socket.emit('chat_send', senderData);
             }catch(err){
                 console.log(err);
