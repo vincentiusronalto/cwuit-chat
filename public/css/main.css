@@ -92,7 +92,6 @@
 
     #sign_btn{
         color: black;
-        margin-left: auto;
         background: white;
         padding: 0 10px;
     }
@@ -136,6 +135,14 @@
         padding: 10px;
         padding-bottom: 25px;
         align-items: flex-start;
+        border-bottom: 1px solid rgb(235,235,235);
+    }
+
+    .chat_beginning{
+        padding: 10px;
+        font-size: 20px;
+        text-align: center;
+        font-family: 'Raleway',Arial, Helvetica, sans-serif;
         border-bottom: 1px solid rgb(235,235,235);
     }
 
@@ -231,12 +238,10 @@
     }
 
     .chat_selector_single_unread{
-        /* width: 8px; */
-        /* height: 8px; */
-        padding: 2px;
+        
+        padding: 3px;
         background: rgb(246,76,114);
         color: white;
-        border-radius: 3px;
         margin-left: auto;
     }
 
@@ -546,6 +551,7 @@
     cursor: pointer;
     box-sizing: border-box;
     display: block;
+    padding: 10px;
 }
 
 #signin_btn{

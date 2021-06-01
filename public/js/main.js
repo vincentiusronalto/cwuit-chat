@@ -101,10 +101,10 @@
         if(data.cty){
             loc = 
             `
-            <div class="profile_single_wrapper">
+            <a class="profile_single_wrapper" href="https://en.wikipedia.org/wiki/${data.cty}" target="_blank">
                 <div><img src="/icon/loc.png" alt="country" class="profile_icon_loc"></div> 
                 <div>${data.cty}</div>
-            </div>
+            </a>
             `;
         }
         //social media build
@@ -114,28 +114,28 @@
 
         if(data.web){
             socmedI +=`
-            <a href="${data.web}" class="profile_single_wrapper">
+            <a href="${data.web}" class="profile_single_wrapper" target="_blank">
                 <div><img src="/icon/web.png" alt="website" class="profile_icon"></div> 
                 </a> 
             </a>`
         }
         if(data.ig){
             socmedI +=`
-            <a href="https://www.instagram.com/${data.ig}" class="profile_single_wrapper">
+            <a href="https://www.instagram.com/${data.ig}" class="profile_single_wrapper" target="_blank">
                 <div><img src="/icon/ig.png" alt="instagram" class="profile_icon"></div> 
                 </a> 
             </a>`
         }
         if(data.fb){
             socmedI +=`
-            <a href="https://www.facebook.com/${data.fb}" class="profile_single_wrapper">
+            <a href="https://www.facebook.com/${data.fb}" class="profile_single_wrapper" target="_blank">
                 <div><img src="/icon/fb.png" alt="facebook" class="profile_icon"></div> 
                 </a> 
             </a>`
         }
         if(data.tw){
             socmedI +=`
-            <a href="https://www.twitter.com/${data.tw}" class="profile_single_wrapper">
+            <a href="https://www.twitter.com/${data.tw}" class="profile_single_wrapper" target="_blank">
                 <div><img src="/icon/tw.png" alt="twitter" class="profile_icon"></div> 
                 </a> 
             </a>`
@@ -736,81 +736,30 @@ let combinedPrivate = filteredChat.concat(noChat)
    
 
     socket.on('chat_load', function(data){
-        
+        try{
         //unread_build = `<div class="chat_selector_single_unread" data-type="topic" data-id="${data.topic[i].id}">${unread}</div>`;
         
         
-        let dotNotif = document.querySelector(`.chat_selector_single_unread[data-type="${data.profile.type}"][data-id="${data.profile.id}"]`);
+        let dotNotif = document.querySelector(`.chat_selector_single_unread[data-type="${data.profile.type}"][data-id="${data.profile.identity}"]`);
+        
         if(dotNotif){
             dotNotif.remove();
         }
         
-        /*
-
-                {
-            "chat": [
-                {
-                    "id": "1",
-                    "sender_id": "1",
-                    "receiver_id": "2",
-                    "identity": "1_2",
-                    "date_created": "2021-05-27T10:40:10.228Z",
-                    "read_status": 0,
-                    "image": null,
-                    "text": "hi 2 from 1",
-                    "name": "vrozen",
-                    "username": "vrozen",
-                    "photo": "profile_test.png"
-                }
-            ],
-            "profile": {
-                "id": "2",
-                "name": "user2",
-                "username": "user2",
-                "photo": "profile_test.png",
-                "date_created": "2021-05-26T18:48:36.268Z",
-                "info_instagram": null,
-                "info_twitter": null,
-                "info_bio": null,
-                "info_website": null,
-                "info_country": null,
-                "info_facebook": null
-
-                topic_name: "All" //if topic
-            }
-        }
-
-        <div id="info_which_chat">
-            <mention>@Natalia</mention>
-        </div>
-
-
-        chat_room_output
-
-        <div class="chat_selector_single">
-            <img src="/test/profile_test.png" class="profile_pic_small">
-            <div class="chat_selector_content">
-                <div><span class="material-icons icon-female">female</span>Roxy</div>
-                <div class="chat_selector_history_chat">lol lolol</div>
-            </div>
-        </div>
-        */
-
-        //REMOVE RED DOT NOTIF
-        // data.profile.type == activetpy
-        // data.profile.id == activeid
-
+       
         //get active id 
+        
         let selector = document.querySelector('.chat_selector_single_active');
         let activeType = selector.getAttribute('data-type');
         let activeId =  selector.getAttribute('data-id');
         
-        let dataId = data.profile.id;
+        let dataId = data.profile.identity;
 
-        if(activeType == 'private'){
-            dataId = data.profile.identity;
-        }
-        
+        // if(activeType == 'private'){
+        //     dataId = data.profile.identity;
+        // }
+        // console.log(data.profile)
+        // console.log(dataId, activeId)
         if(data.profile.type == activeType && dataId == activeId){
             let info = ''
         if(data.profile.type == 'private'){
@@ -818,10 +767,17 @@ let combinedPrivate = filteredChat.concat(noChat)
         }else{
             info = `<span>${data.profile.topic_name}</span>`   
         }
-
+        // console.log(data.chat)
         let chatbuild = '';
+        if(data.profile.type == 'topic'){
+            chatbuild = `<div class="chat_beginning"> This is the beginning chat, Say hi first 👋</div>`;
+        }else{
+            chatbuild = `<div class="chat_beginning"> This is the beginning chat with ${data.profile.name}, Say hi first 👋</div>`;
+        }
+        
+        
         for(let i = 0; i < data.chat.length; i++){
-            
+            console.log('assssss')    
             let imageBuild = '';
             if(data.chat[i].image){
                 let imageMaker = data.chat[i].image.split('_');
@@ -855,8 +811,13 @@ let combinedPrivate = filteredChat.concat(noChat)
                 
             </div>`
         }
+        // if(data.chat.length == 0){
+        //     chatbuild +=`
+        //         <div class="chat_beginning"> This is the beginning chat with ${data.profile.name}, Say hi first 👋</div>
+        //     `
+        // }
 
-
+        // console.log(chatbuild)
 
         document.getElementById('info_which_chat').innerHTML = info;
         
@@ -913,7 +874,9 @@ let combinedPrivate = filteredChat.concat(noChat)
             }else{
                 initProfile(MY_PROFILE)
             }
-
+        }catch(err){
+            console.log(err)
+        }
 
     });
 
@@ -1100,18 +1063,29 @@ let combinedPrivate = filteredChat.concat(noChat)
     }
     function sendChat(){
         //SENDING CHAT
-        let final_text = document.getElementById('chat_room_input_box').innerHTML.trim();   
-        let regex = /^\s*(?:<br\s*\/?\s*>)+|(?:<br\s*\/?\s*>)+\s*$/gi;
-        let final_text2 = final_text.replace(regex, '');
-        final_text2 = final_text2.replace(/^(?:&nbsp;|\s)+|(?:&nbsp;|\s)+$/ig,'');
+        let final_text = document.getElementById('chat_room_input_box').innerHTML.trim();
+        final_text = final_text.replace(/^\s*(?:<br\s*\/?\s*>)+|(?:<br\s*\/?\s*>)+\s*$/gi,'');
+        final_text = final_text.replace(/^(?:&nbsp;|\s)+|(?:&nbsp;|\s)+$/ig,'');
 
-        //clear <div></div>
-        // let regex2 = /^\s*(?:<div\s*\/?\s*>)+|(?:<div\s*\/?\s*>)+\s*$/gi;
-        //
-        // @<(\w+)\s*.*?>\s*?</\1>@ig
-        let final_text3 = final_text2.replace(/^(?:<div>|\s)+|(?:<\/div>|\s)+$/ig, '');
-        // let final_text3 = final_text2.replace(/@<(\w+)\s*.*?>\s*?</\1>@/ig, '');
+
+        function sanitizeHtml(html) {
+            const container = document.createElement('DIV');
+            // Step 1: Parse the HMTL
+            container.innerHTML = html;
         
+            // Step 2: Modify the structure
+            for (let br of container.querySelectorAll('div > br')) {
+                let div = br.parentNode;
+                if (div.textContent.trim() === '') div.parentNode.removeChild(div);
+                // ...over time, I'm sure you'll find more things you'd like to correct
+            }
+        
+            // Step 3: return the modified HTML
+            return container.innerHTML;
+        }
+
+
+        let a = sanitizeHtml(final_text);
 
         //chat 
         
@@ -1132,9 +1106,9 @@ let combinedPrivate = filteredChat.concat(noChat)
         //type
         let type = chatActive.getAttribute('data-type')
 
-        let chat_data = {text:final_text2,img:imgSend, topicId : topicId, type : type, checkId : getUniqueID()};
+        let chat_data = {text:a,img:imgSend, topicId : topicId, type : type, checkId : getUniqueID()};
         
-        if(final_text2 != '' || imgSend.length > 0){
+        if(a != '' || imgSend.length > 0){
             //empty all element
             document.getElementById('chat_room_input_box').innerHTML = '';
             document.getElementById('chat_preview_images').innerHTML = '';
@@ -1145,9 +1119,8 @@ let combinedPrivate = filteredChat.concat(noChat)
     
             createChatSelf(chat_data);
             
-            // socket.emit('chat_send',chat_data);
-            // socket.emit('chat_test',chat_data);
-            // G_socket.emit("chat_send_finish",chat_data);
+            socket.emit('chat_send',chat_data);
+            
         }
         
     }
@@ -1213,7 +1186,7 @@ let combinedPrivate = filteredChat.concat(noChat)
         topicId = chatActive.getAttribute('data-id');
         type = chatActive.getAttribute('data-type');
     }
-    
+    console.log(topicId, type)
 
     
 
@@ -1257,6 +1230,42 @@ let combinedPrivate = filteredChat.concat(noChat)
         let chatClean = sliceToDot(stripper.strip(data.ctext));
         changeContent.textContent = chatClean;
 
+
+        // START DOT check if not self message and not active mesage
+        if(data.uid != MY_ID){
+
+        
+            //check current chat active
+            let chatActive1 = document.querySelector('.chat_selector_single_active');
+            //topicId 
+            let topicId1 = '';
+            let type1 = '';
+            if(chatActive1){
+                topicId1 = chatActive.getAttribute('data-id');
+                type1 = chatActive.getAttribute('data-type');
+            }
+            if(topicId1 != data.ctopicId){
+                let d1 = document.querySelector(`.chat_selector_single[data-type="private"][data-id="${data.ctopicId}"]`);
+            let unreadDiv = document.querySelector(`.chat_selector_single_unread[data-type="private"][data-id="${data.ctopicId}"]`);
+            
+            if(unreadDiv){
+                let valUnread = parseInt(unreadDiv.innerHTML);
+                let finalValue = valUnread + 1;
+                if(finalValue > 999){
+                    finalValue = '999+';
+                }
+                document.querySelector(`.chat_selector_single_unread[data-type="private"][data-id="${data.ctopicId}"]`).innerHTML = finalValue;
+
+            }else{
+                let unread_build = `<div class="chat_selector_single_unread" data-type="private" data-id="${data.ctopicId}">1</div>`;
+                d1.insertAdjacentHTML('beforeend', unread_build);
+            }
+
+            
+            }
+        }
+        
+
         }
 
     }else if(data.ctype = 'topic'){
@@ -1267,6 +1276,37 @@ let combinedPrivate = filteredChat.concat(noChat)
         
 
         changeContent.textContent = data.uname +' : '+ data.ctext;
+
+        if(data.uid != MY_ID){
+        //check current chat active
+        let chatActive2 = document.querySelector('.chat_selector_single_active');
+        //topicId 
+        let topicId2 = '';
+        let type2 = '';
+        if(chatActive2){
+            topicId2 = chatActive.getAttribute('data-id');
+            type2 = chatActive.getAttribute('data-type');
+        }
+        if(topicId2 != data.ctopicId){
+            let d1 = document.querySelector(`.chat_selector_single[data-type="topic"][data-id="${data.ctopicId}"]`);
+            console.log(`.chat_selector_single[data-type="topic"][data-id="${data.ctopicId}"]`)
+            let unreadDiv = document.querySelector(`.chat_selector_single_unread[data-type="topic"][data-id="${data.ctopicId}"]`);
+            if(unreadDiv){
+                let valUnread = parseInt(unreadDiv.innerHTML);
+                let finalValue = valUnread + 1;
+                if(finalValue > 999){
+                    finalValue = '999+';
+                }
+                document.querySelector(`.chat_selector_single_unread[data-type="topic"][data-id="${data.ctopicId}"]`).innerHTML = finalValue;
+    
+            }else{
+                let unread_build = `<div class="chat_selector_single_unread" data-type="topic" data-id="${data.ctopicId}">1</div>`;
+                d1.insertAdjacentHTML('beforeend', unread_build);
+            }
+
+        }
+        }
+        
     }
 
 

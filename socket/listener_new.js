@@ -273,7 +273,7 @@ module.exports = function(server,session){
         // CHAT
 
         socket.on('chat_load', async function(data){
-            
+            try{
             
             let type = cleanInput(data.type);
             let id = cleanInput(data.id);
@@ -315,7 +315,7 @@ module.exports = function(server,session){
             }
             
             
-            try{
+            
 
                 if(type == 'topic'){
                     let dbCheckTopic = await db.query(`SELECT name FROM chat_list_topic WHERE id = $1 LIMIT 1`,[inputId]);
@@ -345,7 +345,7 @@ module.exports = function(server,session){
                         let dbInsertRead = await db.query(`INSERT INTO unread_topic_chat (top_read_chat_id, uid, topic_id) VALUES ($1,$2,$3)`,[lastChatId, MYID, inputId]);
                     }
 
-
+                    profile.identity = inputId;
                 }else{
                     profile.type = 'private'
                     profile.identity = inputId
