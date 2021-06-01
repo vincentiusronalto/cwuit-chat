@@ -48,6 +48,8 @@
     "socket.io-redis": "^6.1.0",
     "svgo": "^2.3.0",
     "unique-keygen": "^1.1.6",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
     "xss-filters": "^1.2.7"
   },
   "description": ""

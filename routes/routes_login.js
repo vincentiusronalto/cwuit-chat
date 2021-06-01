@@ -7,7 +7,7 @@ const emailValidator = require('email-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 8;
 const uniqueKeygen = require('unique-keygen');
-// const sendemail = require('../lib/sendemail.js');
+const logger = require('../lib/logger.js');
 const sendemail = require('../lib/sendemail_new.js');
 
 function tokenMaker(){
@@ -29,7 +29,7 @@ router.get("/logout", async function(req,res,next){
         req.session.destroy();
         res.redirect('/');
     }catch(err){
-        console.log(err)
+        logger.error(err.stack);
     }
 })
 
@@ -129,8 +129,8 @@ router.post("/auth_login",async function(req,res,next){
         
 
     } catch(err){
-        // res.send(err);
-        console.log(err);
+        
+        logger.error(err.stack);
     }
 })
 
@@ -256,7 +256,7 @@ router.post("/auth_register", async function(req,res,next){
             
         }
         }catch(err){
-            console.log(err)
+            logger.error(err.stack);
             
         }
 })
@@ -341,7 +341,7 @@ router.post("/auth_req_change_password", async function(req,res,next){
         }
 
     }catch(err){
-        console.log(err)
+        logger.error(err.stack);
         res.send({
             success  : false
             
@@ -399,7 +399,7 @@ router.get("/auth_create_new_password", async function(req,res,next){
     
     
     catch(err){
-        console.log(err);
+        logger.error(err.stack);
     }
 })
 
@@ -456,7 +456,7 @@ router.get("/verify", async function(req,res,next){
             }
             res.redirect('/')
         } catch (error) {
-            res.send(error);
+            logger.error(err.stack);
         }
 })
 
@@ -501,7 +501,7 @@ router.get("/auth_req_new_verify_emai", async function(req,res,next){
             res.send('exist')
         }
         }catch(err){
-            res.send(err);
+            logger.error(err.stack);
         }
 })
 
@@ -619,7 +619,7 @@ router.post("/create_new_password", async function(req,res,next){
         }
     }
     catch(err){
-        console.log(err);
+        logger.error(err.stack);
     }
 });
 

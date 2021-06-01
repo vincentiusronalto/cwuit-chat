@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
-
+const logger = require('../lib/logger.js');
 async function ifLoggedIn(req,res,next){
-    
+    try{
     if(req.session.uid){
         let myData = await db.query(
         `SELECT id,name,username,photo,
@@ -24,17 +24,18 @@ async function ifLoggedIn(req,res,next){
     }
     
     next()
+    }  catch(err){
+        logger.error(err.stack);
+    }
 }
 
-function hello(){
-    console.log('hellow');
-}
+
 
 
 
 router.get("/", ifLoggedIn, async function(req,res,next){ 
     
-    hello();
+    
     if(res.locals.ifLogin){
         res.redirect('/chat')
     }else{
@@ -46,7 +47,7 @@ router.get("/", ifLoggedIn, async function(req,res,next){
 // PROTECT IMAGE
 
 router.get("/upload/private_chat/:something", ifLoggedIn, async function(req,res,next){
-    
+    try{
     let MYID = req.session.uid;
     if(!MYID){
         res.status(403).send({
@@ -64,6 +65,9 @@ router.get("/upload/private_chat/:something", ifLoggedIn, async function(req,res
             message: 'Access Forbidden'
          });
     }
+    }catch(err){
+        logger.error(err.stack);
+    }
 
 });
 
@@ -76,10 +80,10 @@ router.get("/chat", ifLoggedIn, async function(req,res,next){
     
     res.render('index',{link:'chat', csrf:req.csrfToken()});
 });
-router.get("/u/:username", ifLoggedIn,async function(req,res,next){
+// router.get("/u/:username", ifLoggedIn,async function(req,res,next){
     
-    res.render('index',{link:'profile', csrf:req.csrfToken()});
-});
+//     res.render('index',{link:'profile', csrf:req.csrfToken()});
+// });
 
 
 

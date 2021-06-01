@@ -29,7 +29,7 @@
         isme     : true
     }
 
-    console.log(MY_PROFILE)
+    
 
     //SET COLOR THEME
     let colorThemeBtn = document.getElementById('color_theme_picker');
@@ -65,62 +65,6 @@
         }
     })
 
-//     function contentLoad(){
-
-//         //day - night
-//         let light = `
-//         <div class="lightui1">
-//       <div class="lightui1-shimmer">
-//         <div class="_2iwr"></div>
-//         <div class="_2iws"></div>
-//         <div class="_2iwt"></div>
-//         <div class="_2iwu"></div>
-//         <div class="_2iwv"></div>
-//         <div class="_2iww"></div>
-//         <div class="_2iwx"></div>
-//         <div class="_2iwy"></div>
-//         <div class="_2iwz"></div>
-//         <div class="_2iw-"></div>
-//         <div class="_2iw_"></div>
-//         <div class="_2ix0"></div>
-//       </div>
-//   </div>
-//         `
-
-
-
-//         let dark = `
-//         <div class="darkui2">
-//       <div class="darkui2-shimmer">
-//         <div class="_2iwr"></div>
-//         <div class="_2iws"></div>
-//         <div class="_2iwt"></div>
-//         <div class="_2iwu"></div>
-//         <div class="_2iwv"></div>
-//         <div class="_2iww"></div>
-//         <div class="_2iwx"></div>
-//         <div class="_2iwy"></div>
-//         <div class="_2iwz"></div>
-//         <div class="_2iw-"></div>
-//         <div class="_2iw_"></div>
-//         <div class="_2ix0"></div>
-//       </div>
-//     </div>`
-
-//         if(localStorage.getItem("color_theme")){
-//             let theme = localStorage.getItem("color_theme");
-//             if(theme == 'light'){
-//                 return light;
-//             }else{
-//                 return dark;
-//             }
-//         } else{
-//             return light
-//         }
-
-        
-//     }
-
     function contentLoad(){
 
         //day - night
@@ -151,7 +95,7 @@
 
     function initProfile(data){
         
-        console.log(data)
+        
         //location build
         let loc = '';
         if(data.cty){
@@ -208,7 +152,7 @@
         if(socmedI == ''){
             soctotal = '';
         }
-        console.log(data.date);
+        
         //Join : ${G_dateFormat(data.date)}
         let biomaker = '';
         if(!data.bio){
@@ -361,7 +305,7 @@
         `
         document.getElementById('info_which_chat').innerHTML = 'Edit My Profile';
         document.getElementById('chat_room_output').innerHTML = editProfilePage;
-        console.log(document.getElementById('change_profile_pic_hidden').value)
+        
         }
         }
         //change gender
@@ -381,7 +325,7 @@
             if(photo){
                 photoF = document.getElementById("edit_profile_pp").getAttribute("src")
             }
-            console.log(photoF)
+            
 
             //get gender
             let activeGender = document.querySelector('.gender_select_active');
@@ -407,7 +351,7 @@
                 facebook,
                 twitter
             }
-            console.log(sendData);
+            
             socket.emit('profile_update', sendData);
         
      }
@@ -438,7 +382,7 @@
         };
 
         document.getElementById('cancel_profile_pic').innerHTML = '<div id="cancel_change_pp">Cancel Change Photo</div>'
-        console.log(document.getElementById('change_profile_pic_hidden').value)
+        
         
    }    
 
@@ -447,7 +391,7 @@
             
             document.getElementById("edit_profile_pp").setAttribute("src", `/upload/user/${MY_PROFILE.photo}`);
             document.getElementById("change_profile_pic_hidden").value = "";
-            console.log(document.getElementById('change_profile_pic_hidden').value)
+            
         }
    })
 
@@ -506,7 +450,7 @@
 
     document.addEventListener('click', function(e){
         if(e.target.closest('#sign_btn')){
-            console.log('sign in')
+            
         }
 
         else if(e.target.closest('.single_nav')){
@@ -558,7 +502,7 @@
 
             document.getElementById('chat_topic').classList.toggle('hide')
             if(document.body.clientWidth <= '800'){
-                console.log('tt')
+                
                 document.getElementById('responsive_black_modal').classList.toggle('hide');
                 document.getElementById('chat_topic').classList.toggle('show');
             }
@@ -568,7 +512,7 @@
             
             document.getElementById('profile_right_wrapper').classList.toggle('hide')
             if(document.body.clientWidth <= '800'){
-                console.log('tt')
+                
                 document.getElementById('responsive_black_modal').classList.toggle('hide');
                 document.getElementById('profile_right_wrapper').classList.toggle('show');
             }else{
@@ -619,12 +563,12 @@
 
 
     const stripper = new Stripper()
-    //console.log(stripper.strip('<div><div>hii</br>hiii</div></div>'))
+    
 
 
     socket.emit('user_load');
     socket.on('user_load',function(data){
-        //console.log(data)
+        
         /*
         {
         "topic": [
@@ -669,7 +613,7 @@
         // total = sorted + nochat
         let noChat = [];
         for(let i = 0; i < privateNotOrdered.length; i++){
-//             console.log(privateNotOrdered[i].lastchat.chatid)
+
             if(privateNotOrdered[i].lastchat.chatid == 0){
                 noChat.push(privateNotOrdered[i]);
 
@@ -688,7 +632,7 @@ let filteredNoChat = privateNotOrdered.filter(function (el) {
   return el != null;
 });
 
-// console.log(filteredNoChat)
+
 
 //sort array
 function compareChatId( a, b ) {
@@ -702,7 +646,7 @@ function compareChatId( a, b ) {
 }
 
 let filteredChat = filteredNoChat.sort( compareChatId );
-// console.log(filteredChat)
+
 
 //combine array
 //var children = hege.concat(stale); 
@@ -792,10 +736,10 @@ let combinedPrivate = filteredChat.concat(noChat)
    
 
     socket.on('chat_load', function(data){
-        console.log(data)
+        
         //unread_build = `<div class="chat_selector_single_unread" data-type="topic" data-id="${data.topic[i].id}">${unread}</div>`;
-        console.log(data.profile.type)
-        console.log(data.profile.id);
+        
+        
         let dotNotif = document.querySelector(`.chat_selector_single_unread[data-type="${data.profile.type}"][data-id="${data.profile.id}"]`);
         if(dotNotif){
             dotNotif.remove();
@@ -860,13 +804,13 @@ let combinedPrivate = filteredChat.concat(noChat)
         let selector = document.querySelector('.chat_selector_single_active');
         let activeType = selector.getAttribute('data-type');
         let activeId =  selector.getAttribute('data-id');
-        // console.log(activeType, data.profile.type)
+        
         let dataId = data.profile.id;
 
         if(activeType == 'private'){
             dataId = data.profile.identity;
         }
-        console.log(activeId, dataId)
+        
         if(data.profile.type == activeType && dataId == activeId){
             let info = ''
         if(data.profile.type == 'private'){
@@ -915,7 +859,7 @@ let combinedPrivate = filteredChat.concat(noChat)
 
 
         document.getElementById('info_which_chat').innerHTML = info;
-        // console.log(data);
+        
         document.getElementById('chat_room_output').innerHTML = chatbuild;
         let output = document.getElementById('chat_room_output');
 
@@ -1141,7 +1085,7 @@ let combinedPrivate = filteredChat.concat(noChat)
         var outHTML = "";
         for (var i = 0; i < t.childNodes.length; i++) {
           var lt = t.childNodes[i];
-          //console.log(lt.innerHTML)
+          
           var nowset = false;
           if (lt.innerHTML != undefined && lt.innerHTML != "" && lt.innerHTML != "<br>") {
             between = !between;
@@ -1167,7 +1111,7 @@ let combinedPrivate = filteredChat.concat(noChat)
         // @<(\w+)\s*.*?>\s*?</\1>@ig
         let final_text3 = final_text2.replace(/^(?:<div>|\s)+|(?:<\/div>|\s)+$/ig, '');
         // let final_text3 = final_text2.replace(/@<(\w+)\s*.*?>\s*?</\1>@/ig, '');
-        console.log(final_text3);
+        
 
         //chat 
         
@@ -1200,19 +1144,17 @@ let combinedPrivate = filteredChat.concat(noChat)
             imageChild = '';
     
             createChatSelf(chat_data);
-            console.log(chat_data)
+            
             // socket.emit('chat_send',chat_data);
             // socket.emit('chat_test',chat_data);
             // G_socket.emit("chat_send_finish",chat_data);
         }
         
     }
-    socket.on('chat_test', function(data){
-        console.log('chat_test triggered')
-    })
+    
 
     socket.on('chat_send',function(data){
-        console.log('triggered')
+        
 
         /*
         <div class="chat_selector_single chat_selector_single_active" data-type="private" data-id="1_2">
@@ -1395,7 +1337,7 @@ let combinedPrivate = filteredChat.concat(noChat)
 
     document.addEventListener('click',function(event){
         if(event.target.closest('#chat_room_send_btn')){
-            // console.log('sign in')
+            
             sendChat();
 
         }

@@ -3,18 +3,20 @@ const socketio = require('socket.io');
 const sharedsession = require("express-socket.io-session");
 const sio_redis = require('socket.io-redis');
 const db = require('../db/db');
-// const func = require("./func.js");
+
 
 const base64ToImage = require('base64-to-image');
 const compressImg = require('../lib/compressnew.js');
 const removeFile = require('../lib/remove.js');
 const sanitizeHtml = require('sanitize-html');
-
+const logger = require('../lib/logger.js');
 const fetch = require('node-fetch');
 // ARRAY FOR GUEST
 let ranNumber = require('random-number');
-// const { query } = require('../db/db');
-// const e = require('express');
+
+
+
+
 let options = {
   min:  1
 , max:  999999999999
@@ -188,6 +190,9 @@ module.exports = function(server,session){
         // USER LOAD
 
         socket.on('user_load', async function(){
+            try{
+
+            
             
             //HARDCODED TO 1
             let dbTopic = await db.query(`SELECT id, name, image FROM chat_list_topic`);
@@ -258,6 +263,10 @@ module.exports = function(server,session){
             }
             
             io.to(socketId).emit('user_load', result);
+
+            }catch(err){
+                logger.error(err.stack);
+            }
         });
 
 
@@ -265,8 +274,9 @@ module.exports = function(server,session){
 
         socket.on('chat_load', async function(data){
             
-            let type = data.type;
-            let id = data.id;
+            
+            let type = cleanInput(data.type);
+            let id = cleanInput(data.id);
             let inputId = id;
             
             let profileId = '';
@@ -293,7 +303,7 @@ module.exports = function(server,session){
 
             // MYID
             let profile;
-            if(MYID == 0 && data.type == 'topic'){
+            if(MYID == 0 && type == 'topic'){
                 profile = {id:'0',name:'Guest',username:'guest',photo:'avatar.png',info_bio:'Hii',info_website:'https://www.example.com',info_instagram:'example',info_facebook:'example',info_twitter:'example',info_country:'example',
                 info_gender:'male',date_created:'0'};
             }else{
@@ -307,7 +317,7 @@ module.exports = function(server,session){
             
             try{
 
-                if(data.type == 'topic'){
+                if(type == 'topic'){
                     let dbCheckTopic = await db.query(`SELECT name FROM chat_list_topic WHERE id = $1 LIMIT 1`,[inputId]);
                     profile.topic_name = dbCheckTopic.rows[0].name
 
@@ -356,14 +366,12 @@ module.exports = function(server,session){
                 console.log(profile)
                 io.to(socketId).emit('chat_load', result);
             }catch(err){
-                console.log(err)
+                logger.error(err.stack);
             }
             
         });
         
-        socket.on('chat_test', async function(data){
-            await io.emit('chat_test', data)
-        });
+        
         socket.on('chat_send', async function(data){
             try{
                 
@@ -387,7 +395,11 @@ module.exports = function(server,session){
                     return 0 
                 }
                 let dbInsert;
-                let checkId = data.checkId;
+                let checkId = cleanInput(data.checkId);
+                let cleanimg = cleanInput(data.img);
+                let cleanText = cleanInput(data.text);
+                let cleantopicId = cleanInput(data.topicId);
+                let cleanType = cleanInput(data.type)
                 let nullVal = null;
                 let zero = '0';
                 let pic = '';
@@ -401,24 +413,24 @@ module.exports = function(server,session){
                     
                 // }else if(data.type == 'topic'){
 
-                if(data.type == 'topic'){
-                    pic = await uploadImage2(data.img,'topic_chat');
+                if(cleanType == 'topic'){
+                    pic = await uploadImage2(cleanimg,'topic_chat');
                     
                     let sql = `INSERT INTO chat_data_topic (id_sender, text, date_created, id_topic, image, id_check)
                     VALUES ($1, $2,  NOW(), $3, $4, $5) RETURNING id, date_created
                     `;
     
-                    dbInsert = await db.query(sql, [MYID,data.text,data.topicId, pic, checkId]);
+                    dbInsert = await db.query(sql, [MYID,cleanText,cleantopicId, pic, checkId]);
                     
                 }else{ //private
-                    pic = await uploadImage2(data.img,'private_chat');
+                    pic = await uploadImage2(cleanimg,'private_chat');
                     let sql = `INSERT INTO chat_data_private 
                     (sender_id, text, receiver_id, identity, date_created, 
                     read_status, image, id_check)
                     VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7) RETURNING id, date_created
                     `;
                     // let identityArr = data.topicId;
-                    let identity = data.topicId;
+                    let identity = cleantopicId;
                     let identityArr = identity.split('_');
                     let receiverId;
                     for(let i = 0 ; i < identityArr.length; i++){
@@ -427,7 +439,7 @@ module.exports = function(server,session){
                         }
                     }
                     
-                    dbInsert = await db.query(sql, [MYID,data.text,receiverId,data.topicId, zero, pic, checkId]);
+                    dbInsert = await db.query(sql, [MYID,cleanText,receiverId,cleantopicId, zero, pic, checkId]);
                     
                     //[ '2', 'hiiiiiiiiii', '_', '1_2', '0', null, '16224318285955642' ]
                 }
@@ -444,10 +456,10 @@ module.exports = function(server,session){
                     username : dbSender.rows[0].username,
                     chatid : returnId,
                     cdate : returnDate,
-                    ctext : data.text,
+                    ctext : cleanText,
                     cpic : pic,
-                    ctopicId : data.topicId,
-                    ctype : data.type,
+                    ctopicId : cleantopicId,
+                    ctype : cleanType,
                     checkId : checkId
                 }
                 // console.log('send')
@@ -455,7 +467,7 @@ module.exports = function(server,session){
                 // console.log('chat')
                 io.emit('chat_send', senderData);
             }catch(err){
-                console.log(err);
+                logger.error(err.stack);
             }
         });
 
@@ -548,7 +560,7 @@ module.exports = function(server,session){
 
 
             }catch(err){
-                console.log(err);
+                logger.error(err.stack);
             }
         });
 
@@ -584,7 +596,7 @@ module.exports = function(server,session){
                 //
                 io.to(socketId).emit('user_follow', object);
             }catch(err){
-                
+                logger.error(err.stack);
             }
         })
 
