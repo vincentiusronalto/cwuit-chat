@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/dark.css" id=color_theme_css disabled>
+    <link rel="stylesheet" href="/css/contentload.css">
     <title>Document</title>
 
 </head>
@@ -28,7 +30,7 @@
                     </div>
 
                     <div id="chat_topic_wrapper">
-                        <img src="/test/loading.gif" alt="chat" id="illustration_loading">
+                        <!-- <img src="/test/loading.gif" alt="chat" id="illustration_loading"> -->
                     </div>
 
                     <div id="chat_private_wrapper">
@@ -54,6 +56,12 @@
                     <div id="info_which_chat">
                         
                     </div>
+                    <div id="top_right_separator">
+
+                    </div>
+                    <!-- light_mode -->
+                    <!-- dark_mode -->
+                    <div class="material-icons" id="color_theme_picker"></div>
 
                     <%if (locals.ifLogin == false) { %>
                         <a id="sign_btn" href="/login">
@@ -61,7 +69,7 @@
                         </a>
                         <% } else { %>
                             <div id="my_profile_top_right">
-                                <img src="/upload/user/profile_test.png" alt="my photo" id="profile_photo_small_right">
+                                <img src="/upload/user/<%= locals.MYDATA.photo %>" alt="my photo" id="profile_photo_small_right">
                             </div>
                         <% } %>
 

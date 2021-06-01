@@ -31,6 +31,124 @@
 
     console.log(MY_PROFILE)
 
+    //SET COLOR THEME
+    let colorThemeBtn = document.getElementById('color_theme_picker');
+
+
+    let colorThemeValue = colorThemeBtn.innerHTML;
+
+    // localStorage.setItem("color_theme","light")
+    //set
+    let colorFirst = localStorage.getItem("color_theme");
+    if(colorFirst == 'dark'){
+        colorThemeBtn.innerHTML = 'dark_mode';
+        document.getElementById('color_theme_css').removeAttribute('disabled');
+    }else{
+        colorThemeBtn.innerHTML = 'light_mode';
+        document.getElementById('color_theme_css').setAttribute('disabled','true');
+    }
+
+    document.addEventListener('click', function(e){
+        if(e.target.closest('#color_theme_picker')){
+            let colorCheck = localStorage.getItem("color_theme");
+            if(colorThemeBtn.innerHTML == 'dark_mode'){ // dark -> light
+                colorThemeBtn.innerHTML = 'light_mode'
+                localStorage.setItem("color_theme","light");
+                document.getElementById('color_theme_css').setAttribute('disabled','true');
+                
+            }else{
+                colorThemeBtn.innerHTML = 'dark_mode' // light -> dark
+                localStorage.setItem("color_theme","dark");
+                document.getElementById('color_theme_css').removeAttribute('disabled');
+            }
+            
+        }
+    })
+
+//     function contentLoad(){
+
+//         //day - night
+//         let light = `
+//         <div class="lightui1">
+//       <div class="lightui1-shimmer">
+//         <div class="_2iwr"></div>
+//         <div class="_2iws"></div>
+//         <div class="_2iwt"></div>
+//         <div class="_2iwu"></div>
+//         <div class="_2iwv"></div>
+//         <div class="_2iww"></div>
+//         <div class="_2iwx"></div>
+//         <div class="_2iwy"></div>
+//         <div class="_2iwz"></div>
+//         <div class="_2iw-"></div>
+//         <div class="_2iw_"></div>
+//         <div class="_2ix0"></div>
+//       </div>
+//   </div>
+//         `
+
+
+
+//         let dark = `
+//         <div class="darkui2">
+//       <div class="darkui2-shimmer">
+//         <div class="_2iwr"></div>
+//         <div class="_2iws"></div>
+//         <div class="_2iwt"></div>
+//         <div class="_2iwu"></div>
+//         <div class="_2iwv"></div>
+//         <div class="_2iww"></div>
+//         <div class="_2iwx"></div>
+//         <div class="_2iwy"></div>
+//         <div class="_2iwz"></div>
+//         <div class="_2iw-"></div>
+//         <div class="_2iw_"></div>
+//         <div class="_2ix0"></div>
+//       </div>
+//     </div>`
+
+//         if(localStorage.getItem("color_theme")){
+//             let theme = localStorage.getItem("color_theme");
+//             if(theme == 'light'){
+//                 return light;
+//             }else{
+//                 return dark;
+//             }
+//         } else{
+//             return light
+//         }
+
+        
+//     }
+
+    function contentLoad(){
+
+        //day - night
+        let loader = `
+        <div class="loader">
+      <div class="loader-shimmer">
+        <div class="_2iwr"></div>
+        <div class="_2iws"></div>
+        <div class="_2iwt"></div>
+        <div class="_2iwu"></div>
+        <div class="_2iwv"></div>
+        <div class="_2iww"></div>
+        <div class="_2iwx"></div>
+        <div class="_2iwy"></div>
+        <div class="_2iwz"></div>
+        <div class="_2iw-"></div>
+        <div class="_2iw_"></div>
+        <div class="_2ix0"></div>
+      </div>
+  </div>
+        `
+        return loader;
+
+        
+    }
+
+    document.getElementById('chat_topic_wrapper').innerHTML = contentLoad();
+
     function initProfile(data){
         
         console.log(data)
@@ -411,9 +529,10 @@
                 cl[i].classList.remove('chat_selector_single_active')
             }
             document.querySelector(`.chat_selector_single[data-id="${dataId}"]`).classList.add('chat_selector_single_active');
-            document.getElementById('chat_room_output').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
-            document.getElementById('profile_right_inside').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
-            
+            // document.getElementById('chat_room_output').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
+            // document.getElementById('profile_right_inside').innerHTML = `<img src="/test/loading.gif" alt="chat" id="illustration_loading"></img>`
+            document.getElementById('chat_room_output').innerHTML = contentLoad();
+            document.getElementById('profile_right_inside').innerHTML = contentLoad();
 
             let data = {type:dataType,id:dataId};
             if(MY_ID == '0'){
@@ -452,6 +571,9 @@
                 console.log('tt')
                 document.getElementById('responsive_black_modal').classList.toggle('hide');
                 document.getElementById('profile_right_wrapper').classList.toggle('show');
+            }else{
+                // > 800
+                document.getElementById('profile_right_wrapper').classList.remove('show');
             }
 
             //if
@@ -672,8 +794,13 @@ let combinedPrivate = filteredChat.concat(noChat)
     socket.on('chat_load', function(data){
         console.log(data)
         //unread_build = `<div class="chat_selector_single_unread" data-type="topic" data-id="${data.topic[i].id}">${unread}</div>`;
-        var myobj = document.querySelector(`chat_selector_single_unread[data-type="${topic}"][data-id="${topic}"]`);
-        myobj.remove();
+        console.log(data.profile.type)
+        console.log(data.profile.id);
+        let dotNotif = document.querySelector(`.chat_selector_single_unread[data-type="${data.profile.type}"][data-id="${data.profile.id}"]`);
+        if(dotNotif){
+            dotNotif.remove();
+        }
+        
         /*
 
                 {
@@ -726,9 +853,22 @@ let combinedPrivate = filteredChat.concat(noChat)
         */
 
         //REMOVE RED DOT NOTIF
+        // data.profile.type == activetpy
+        // data.profile.id == activeid
 
+        //get active id 
+        let selector = document.querySelector('.chat_selector_single_active');
+        let activeType = selector.getAttribute('data-type');
+        let activeId =  selector.getAttribute('data-id');
+        // console.log(activeType, data.profile.type)
+        let dataId = data.profile.id;
 
-        let info = ''
+        if(activeType == 'private'){
+            dataId = data.profile.identity;
+        }
+        console.log(activeId, dataId)
+        if(data.profile.type == activeType && dataId == activeId){
+            let info = ''
         if(data.profile.type == 'private'){
             info = `<span>@${data.profile.username}</span>`
         }else{
@@ -771,6 +911,9 @@ let combinedPrivate = filteredChat.concat(noChat)
                 
             </div>`
         }
+
+
+
         document.getElementById('info_which_chat').innerHTML = info;
         // console.log(data);
         document.getElementById('chat_room_output').innerHTML = chatbuild;
@@ -782,6 +925,9 @@ let combinedPrivate = filteredChat.concat(noChat)
                 output.scrollTop = output.scrollHeight;
                 output.style.opacity = "1";
             },'300')
+        }
+
+        
 
 
         //initProfile()

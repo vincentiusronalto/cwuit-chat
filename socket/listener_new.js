@@ -338,6 +338,7 @@ module.exports = function(server,session){
 
                 }else{
                     profile.type = 'private'
+                    profile.identity = inputId
                     let sqlChat = `SELECT c.id, c.sender_id, c.receiver_id, c.identity, 
                     c.date_created, c.read_status, c.image, c.text, u.name, u.username, u.photo 
                     FROM chat_data_private c , users u WHERE identity = $1 AND u.id = c.sender_id ORDER BY c.date_created ASC`;
@@ -352,7 +353,7 @@ module.exports = function(server,session){
                 let result = {chat,profile};
 
                 // ADD ALREADY READ
-                
+                console.log(profile)
                 io.to(socketId).emit('chat_load', result);
             }catch(err){
                 console.log(err)
