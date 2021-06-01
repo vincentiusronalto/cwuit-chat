@@ -502,7 +502,7 @@
 
     socket.emit('user_load');
     socket.on('user_load',function(data){
-        console.log(data)
+        //console.log(data)
         /*
         {
         "topic": [
@@ -594,6 +594,19 @@ let combinedPrivate = filteredChat.concat(noChat)
         //topic
         let topicbuild = ``;
         for(let i = 0; i < data.topic.length;  i++){
+
+            //unread build
+            let unread = data.topic[i].unread_count;
+            let unread_build = ``;
+            if(unread > 0){
+                
+            if(unread > 999){
+                unread = '999+'
+            }
+                unread_build = `<div class="chat_selector_single_unread" data-type="topic" data-id="${data.topic[i].id}">${unread}</div>`;
+            }
+
+
             topicbuild += 
             `
             <div class="chat_selector_single" data-type="topic" data-id="${data.topic[i].id}">
@@ -602,6 +615,7 @@ let combinedPrivate = filteredChat.concat(noChat)
                     <div>${data.topic[i].name}</div>
                     <div class="chat_selector_history_chat"><span class="chat_selection_name_blue">${data.topic[i].lastchat.name}</span> : ${data.topic[i].lastchat.text}</div>
                 </div>
+                ${unread_build}
             </div>
             `
         }
@@ -617,6 +631,23 @@ let combinedPrivate = filteredChat.concat(noChat)
 
             //stripper.strip();
             let lastchat = sliceToDot(stripper.strip(combinedPrivate[i].lastchat.text));
+
+            //unread private
+            // let 
+            if(combinedPrivate[i].lastchat.unread > 0){
+
+            }
+
+            //unread build
+            let unread =  combinedPrivate[i].lastchat.unread;
+            let unread_build = ``;
+            if(unread > 0){
+                
+            if(unread > 999){
+                unread = '999+'
+            }
+                unread_build = `<div class="chat_selector_single_unread" data-type="private" data-id="${combinedPrivate[i].identity}">${unread}</div> `;
+            }
             
             privatebuild +=
             `
@@ -626,6 +657,7 @@ let combinedPrivate = filteredChat.concat(noChat)
                     <div class="chat_selection_name_blue">${genderBuild}${combinedPrivate[i].name}</div>
                     <div class="chat_selector_history_chat">${lastchat}</div>
                 </div>
+                ${unread_build}
             </div>
             `
             
@@ -639,6 +671,9 @@ let combinedPrivate = filteredChat.concat(noChat)
 
     socket.on('chat_load', function(data){
         console.log(data)
+        //unread_build = `<div class="chat_selector_single_unread" data-type="topic" data-id="${data.topic[i].id}">${unread}</div>`;
+        var myobj = document.querySelector(`chat_selector_single_unread[data-type="${topic}"][data-id="${topic}"]`);
+        myobj.remove();
         /*
 
                 {
@@ -689,6 +724,9 @@ let combinedPrivate = filteredChat.concat(noChat)
             </div>
         </div>
         */
+
+        //REMOVE RED DOT NOTIF
+
 
         let info = ''
         if(data.profile.type == 'private'){
@@ -898,8 +936,8 @@ let combinedPrivate = filteredChat.concat(noChat)
     function createChatSelf(data){
         // let chat_data = {text:final_text2,img:imgSend, topicId : chatActiveTopicId, type : chatActiveType,checkId : getUniqueID()};
     
-        let balloon = 'chat_room_balloon_gray';
-        let cdata = 'chat_data_gray';
+        
+        
         let pic = '';
         if(data.img){
             let picArr = data.img;
@@ -921,17 +959,22 @@ let combinedPrivate = filteredChat.concat(noChat)
         //     </div>
         // </div>
         // `;
-
+        
         let chat = 
-        `<div class="chat_content_single" data-checkId="${data.checkId}">
-            <img src="/upload/user/${MY_PHOTO}" class="profile_pic_small">
-            <div class="chat_content_content">
-                <div class="chat_content_name">${MY_NAME}</div>
-                <div class="chat_selector_history_chat">${data.text}</div>
-                <div>${pic}</div>
-            </div>
-            <div class="chat_date_data"><div>Sending</div></div> 
-        </div>`
+            `<div class="chat_content_single" data-checkId="${data.checkId}">
+                <img src="/upload/user/${MY_PHOTO}" class="profile_pic_small">
+                <div class="chat_content_content">
+                    <div class="chat_content_name_date">
+                        <div class="chat_content_name">${MY_NAME}</div>
+                        <div class="chat_date_data"><div>Sending</div></div> 
+                    </div>
+                    
+                    <div class="chat_selector_history_chat">${data.text}</div>
+                    <div>${pic}</div>
+                </div>
+            </div>`
+        
+        
     
         let output = document.getElementById('chat_room_output');
             output.innerHTML += chat;
@@ -945,6 +988,26 @@ let combinedPrivate = filteredChat.concat(noChat)
         let uid = (Date.now() + ( (Math.random()*100000).toFixed()))
         return uid;
     }
+    //https://stackoverflow.com/questions/52910602/how-to-trim-html-content-in-js
+    //http://jsfiddle.net/fua0skgm/
+    function trimHTML(t) {
+        var between = false;
+        var outHTML = "";
+        for (var i = 0; i < t.childNodes.length; i++) {
+          var lt = t.childNodes[i];
+          //console.log(lt.innerHTML)
+          var nowset = false;
+          if (lt.innerHTML != undefined && lt.innerHTML != "" && lt.innerHTML != "<br>") {
+            between = !between;
+            nowset = true;
+            outHTML += lt.outerHTML;
+          }
+          if (between && !nowset) {
+            outHTML += lt.outerHTML;
+          }
+        }
+        return outHTML;
+    }
     function sendChat(){
         //SENDING CHAT
         let final_text = document.getElementById('chat_room_input_box').innerHTML.trim();   
@@ -954,7 +1017,10 @@ let combinedPrivate = filteredChat.concat(noChat)
 
         //clear <div></div>
         // let regex2 = /^\s*(?:<div\s*\/?\s*>)+|(?:<div\s*\/?\s*>)+\s*$/gi;
+        //
+        // @<(\w+)\s*.*?>\s*?</\1>@ig
         let final_text3 = final_text2.replace(/^(?:<div>|\s)+|(?:<\/div>|\s)+$/ig, '');
+        // let final_text3 = final_text2.replace(/@<(\w+)\s*.*?>\s*?</\1>@/ig, '');
         console.log(final_text3);
 
         //chat 
@@ -989,11 +1055,15 @@ let combinedPrivate = filteredChat.concat(noChat)
     
             createChatSelf(chat_data);
             console.log(chat_data)
-            socket.emit('chat_send',chat_data);
+            // socket.emit('chat_send',chat_data);
+            // socket.emit('chat_test',chat_data);
             // G_socket.emit("chat_send_finish",chat_data);
         }
         
     }
+    socket.on('chat_test', function(data){
+        console.log('chat_test triggered')
+    })
 
     socket.on('chat_send',function(data){
         console.log('triggered')
@@ -1049,9 +1119,13 @@ let combinedPrivate = filteredChat.concat(noChat)
     //get ID/type from active
     let chatActive = document.querySelector('.chat_selector_single_active');
     //topicId 
-    let topicId = chatActive.getAttribute('data-id');
-    //type
-    let type = chatActive.getAttribute('data-type');
+    let topicId = '';
+    let type = '';
+    if(chatActive){
+        topicId = chatActive.getAttribute('data-id');
+        type = chatActive.getAttribute('data-type');
+    }
+    
 
     
 
@@ -1092,8 +1166,8 @@ let combinedPrivate = filteredChat.concat(noChat)
         //chat_selector_single[data-type="private"]
 
         let changeContent = document.querySelector(`.chat_selector_single[data-type="private"][data-id="${data.ctopicId}"] .chat_selector_history_chat`)
-
-        changeContent.textContent = data.ctext;
+        let chatClean = sliceToDot(stripper.strip(data.ctext));
+        changeContent.textContent = chatClean;
 
         }
 
@@ -1121,7 +1195,7 @@ let combinedPrivate = filteredChat.concat(noChat)
 
         else
         {
-        console.log('partner trigger')
+      
         let pic = '';
         
         if(data.cpic){
@@ -1145,23 +1219,27 @@ let combinedPrivate = filteredChat.concat(noChat)
         }
         // let dates = G_dateFormat(data.cdate);
         let dates = moment(data.cdate).fromNow();
-        
-  
-        let chat =
-        `<div class="chat_content_single" data-chatId="${data.chatid}">
-            <img src="/upload/user/${data.uphoto}" class="profile_pic_small">
-            <div class="chat_content_content">
-                <div>${data.uname}</div>
-                <div class="chat_selector_history_chat">${data.ctext}</div>
-                <div>${pic}</div>
-            </div>
-            <div class="chat_date_data"><div>${dates}</div></div> 
-        </div>`;
 
+        let chat =
+            `<div class="chat_content_single" data-chatId="${data.chatid}">
+                <img src="/upload/user/${data.uphoto}" class="profile_pic_small">
+                <div class="chat_content_content">
+                    <div class="chat_content_name_date">
+                        <div class="chat_content_name">${data.uname}</div>
+                        <div class="chat_date_data"><div>${dates}</div></div> 
+                    </div>
+                    
+                    <div class="chat_selector_history_chat">${data.ctext}</div>
+                    <div>${pic}</div>
+                </div>
+                
+            </div>`;
+  
 
         
         let output = document.getElementById('chat_room_output');
         output.innerHTML += chat;
+        output.scrollTop = output.scrollHeight;
         
         }
         

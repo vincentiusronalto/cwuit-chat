@@ -228,6 +228,16 @@
         background: rgb(243,243,243);
     }
 
+    .chat_selector_single_unread{
+        /* width: 8px; */
+        /* height: 8px; */
+        padding: 2px;
+        background: rgb(246,76,114);
+        color: white;
+        border-radius: 3px;
+        margin-left: auto;
+    }
+
     #chat_topic{
         min-width: 250px;
         max-width: 250px;

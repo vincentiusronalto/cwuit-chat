@@ -13,8 +13,8 @@ const sanitizeHtml = require('sanitize-html');
 const fetch = require('node-fetch');
 // ARRAY FOR GUEST
 let ranNumber = require('random-number');
-const { query } = require('../db/db');
-const e = require('express');
+// const { query } = require('../db/db');
+// const e = require('express');
 let options = {
   min:  1
 , max:  999999999999
@@ -148,8 +148,8 @@ module.exports = function(server,session){
                 offlineArr.splice(index, 1);
             }
             //if user online remove MYID value from array
-            // socket.emit('user_online', MYID)
-            socket.emit('user_just_online', MYID);
+            // io.emit('user_online', MYID)
+            io.emit('user_just_online', MYID);
             
         }
 
@@ -197,6 +197,18 @@ module.exports = function(server,session){
                  //GET 1 -  ALL TOPIC -last message
                 let dbChatTopic = await db.query(`SELECT u.name, c.text  FROM users u, chat_data_topic c WHERE id_topic = $1 AND u.id = c.id_sender ORDER BY c.id DESC LIMIT 1`,[topicList[i].id]);
                 topicList[i].lastchat = dbChatTopic.rows[0];
+
+                //check how many unread notif per user
+                let dbUnreadTopic = await db.query(`SELECT top_read_chat_id, uid FROM unread_topic_chat WHERE uid = $1 AND topic_id = $2`,[MYID, topicList[i].id]);
+                let lastReadId = 0;
+
+                if(dbUnreadTopic.rows.length > 0){
+                    lastReadId    = dbUnreadTopic.rows[0].top_read_chat_id;
+                }
+
+                let dbCheckHowmany = await db.query(`SELECT COUNT(id) AS unread_count FROM chat_data_topic WHERE id > $1 AND id_topic = $2`,[lastReadId, topicList[i].id]);
+                topicList[i].unread_count = dbCheckHowmany.rows[0].unread_count;
+                
             }
 
            
@@ -217,7 +229,7 @@ module.exports = function(server,session){
 
                 memberR[i].identity = identity;
 
-                let dbSingleMemberChat = await db.query(`SELECT u.name, c.text, c.id AS chatid FROM chat_data_private c, users u WHERE identity = $1     AND c.sender_id = u.id ORDER BY c.id DESC LIMIT 1`,[identity]);
+                let dbSingleMemberChat = await db.query(`SELECT u.name, c.text, c.id AS chatid FROM chat_data_private c, users u WHERE identity = $1 AND c.sender_id = u.id ORDER BY c.id DESC LIMIT 1`,[identity]);
                 memberR[i].lastchat = dbSingleMemberChat.rows[0];
                 if(!dbSingleMemberChat.rows[0]){
                     memberR[i].lastchat = {
@@ -227,7 +239,16 @@ module.exports = function(server,session){
 
                     }
                 }
+
+                //get unread private
+                let dbUnreadPrivate = await db.query(`SELECT count(id) AS count FROM chat_data_private WHERE sender_id = $1 AND receiver_id = $2 AND read_status = 0`,[memberR[i].id, MYID]);
+
+                let unread = 0
+                if(dbUnreadPrivate.rows[0]){
+                    unread = dbUnreadPrivate.rows[0].count;
+                }
                 
+                memberR[i].lastchat.unread = unread;
             }
 
             let result =
@@ -296,6 +317,25 @@ module.exports = function(server,session){
                     FROM chat_data_topic c, users u WHERE id_topic = $1 AND u.id = c.id_sender ORDER BY c.date_created ASC`;
                     let dbTopic = await db.query(sqlChat,[inputId]);
                     chat = dbTopic.rows;
+
+
+                    //update read
+                    //get last topic chat 
+                    let dbLastChatId = await db.query(`SELECT c.id FROM chat_data_topic c WHERE id_topic = $1 ORDER BY c.id DESC LIMIT 1`,[inputId]);
+                    let lastChatId = dbLastChatId.rows[0].id;
+
+                    //update if already has record on unread_topic_chat
+                    let dbCheck = await db.query(`SELECT id FROM unread_topic_chat WHERE topic_id = $1 AND uid = $2 LIMIT 1`,[inputId, MYID]);
+                    let checkRecord = dbCheck.rows[0];
+                    if(checkRecord){
+                        //update
+                        let dbUpdateRead = await db.query(`UPDATE unread_topic_chat SET top_read_chat_id = $1 WHERE uid = $2 AND topic_id = $3`,[lastChatId, MYID, inputId]);
+                    }else{
+                        //insert
+                        let dbInsertRead = await db.query(`INSERT INTO unread_topic_chat (top_read_chat_id, uid, topic_id) VALUES ($1,$2,$3)`,[lastChatId, MYID, inputId]);
+                    }
+
+
                 }else{
                     profile.type = 'private'
                     let sqlChat = `SELECT c.id, c.sender_id, c.receiver_id, c.identity, 
@@ -303,9 +343,15 @@ module.exports = function(server,session){
                     FROM chat_data_private c , users u WHERE identity = $1 AND u.id = c.sender_id ORDER BY c.date_created ASC`;
                     let dbTopic = await db.query(sqlChat,[inputId]);
                     chat = dbTopic.rows;
+
+                    //update read
+                    let dbUpdateRead = await db.query(`UPDATE chat_data_private SET read_status = 1 WHERE sender_id = $1 and receiver_id = $2`,[profileId, MYID])
+
                 }
                 
                 let result = {chat,profile};
+
+                // ADD ALREADY READ
                 
                 io.to(socketId).emit('chat_load', result);
             }catch(err){
@@ -314,7 +360,9 @@ module.exports = function(server,session){
             
         });
         
-
+        socket.on('chat_test', async function(data){
+            await io.emit('chat_test', data)
+        });
         socket.on('chat_send', async function(data){
             try{
                 
@@ -401,10 +449,10 @@ module.exports = function(server,session){
                     ctype : data.type,
                     checkId : checkId
                 }
-                console.log('send')
-                console.log(senderData)
-                console.log('chat')
-                socket.emit('chat_send', senderData);
+                // console.log('send')
+                // console.log(senderData)
+                // console.log('chat')
+                io.emit('chat_send', senderData);
             }catch(err){
                 console.log(err);
             }
