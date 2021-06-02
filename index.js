@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(csrf({ cookie: true, httpOnly : true, secure: true}))
 
 //csurf-cookie-bodyparser
-let localIP = '192.168.100.4';
+
 
 // SESSION - REDIS
 const Session = require('express-session');
@@ -51,13 +51,14 @@ app.use(express.static('public'));
 
 const server = require('http').Server(app);
 
-server.listen('3000', 'localhost',() => {
-    console.log("Listening on port: 3000");
-});
-
-// server.listen('3000', localIP || 'localhost',() => {
-//       console.log("Listening on port: 3000");
+let localIP = '192.168.100.4';
+// server.listen('3000', 'localhost',() => {
+//     console.log("Listening on port: 3000");
 // });
+
+server.listen('3000', localIP || 'localhost',() => {
+      console.log("Listening on local ip:3000");
+});
 
 
 

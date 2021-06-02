@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <meta name="title" content="cwuit.com| best online chatting website">
+    <meta name="description" content="Free online chatting website, making new friend online, share your story here! create your account and start chatting right now">
+    <meta name="keywords" content="chatting, online chat, free chat, anonymous chat, stranger chat">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="1 days">
+    <meta name="author" content="By Gregrorius Rinaldo and Vincentius Ronalto">
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <script data-ad-client="ca-pub-4384592571804102" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <title>Login to chatting room</title>
 </head>
 
@@ -17,16 +29,25 @@
 
     <div id="auth_ejs_wrapper">
         <div id="auth_ejs">
-                <div>
-                    <h1>cwuit.com</h2>
-                    <h2 >Online Chat Room</h1>
                 
-                </div>
-                <!-- <span class="close">&times;</span> -->
+                
                 
                     
 
                 <div id="login_signup_action">
+                    
+                    <h1 id="logo">cwuit.com</h1>
+                    <div id="auth_info_link_wrapper">   
+                        <div class="auth_info_show"></div>
+                        <div id="auth_link_to_other">    
+                                <div id="auth_link_login"     data-content="login_wrapper" class="auth_single_link auth_link_active">Login</div>
+                                <div>|</div>
+                                <div id="auth_link_signup"    data-content="signup_wrapper" class="auth_single_link">Sign Up</div>
+                                <div>|</div>
+                                <div id="auth_link_passreset" data-content="forgot_pass_wrapper" class="auth_single_link">Reset Password</div>
+                        </div>
+                    </div>
+                    
                                     
                     <input id="auth_csrf_val" type="hidden" name="_csrf" value="<%= csrf %>" />  
                     <div id="login_wrapper" class="auth_single_wrapper auth_single_active">
@@ -49,20 +70,11 @@
 
                 </div>
 
-                <div id="auth_info_link_wrapper">   
-                    <div class="auth_info_show"></div>
-                    <div id="auth_link_to_other">    
-                            <div id="auth_link_login"     data-content="login_wrapper" class="auth_single_link auth_link_active">Login</div>
-                            <div>|</div>
-                            <div id="auth_link_signup"    data-content="signup_wrapper" class="auth_single_link">Sign Up</div>
-                            <div>|</div>
-                            <div id="auth_link_passreset" data-content="forgot_pass_wrapper" class="auth_single_link">Reset Password</div>
-                    </div>
-                </div>
+                
                 
 
                 <div>
-                    <a href="/chat">Check App as Guest</a>
+                    <a href="/chat">Sign In as Guest</a>
                 </div>
                 <div id="auth_confirm">
                 </div>

@@ -43,7 +43,7 @@ router.post("/auth_login",async function(req,res,next){
         //get username-email 
         const username_email       = xssFilters.inHTMLData(req.body.uname_email);
         const password             = xssFilters.inHTMLData(req.body.password);
-        console.log(password)
+        
         req.session.username_email = username_email;
 
         //check if username exist
@@ -118,7 +118,7 @@ router.post("/auth_login",async function(req,res,next){
         }else{
             //username/email not exist
             //send back to login, tell username/email not exist 
-            console.log('failed login')
+            
             res.send({
                 success: false,
                 type:'login',
@@ -141,8 +141,8 @@ router.post("/auth_register", async function(req,res,next){
         let email    =  xssFilters.inHTMLData(req.body.email);
         let password =  xssFilters.inHTMLData(req.body.password);
 
-        let formdata = {username,email,password};
-        console.log(formdata)
+        // let formdata = {username,email,password};
+        
         let errExist = false;
 
         let errorCheck = {
@@ -156,6 +156,7 @@ router.post("/auth_register", async function(req,res,next){
     
         //USERNAME
         //is unique username 
+        username = username.toLowerCase();
         const dbUniqueUser = await db.query('SELECT username FROM users WHERE username = $1', [username]);
 
         if(dbUniqueUser.rows.length > 0){
@@ -195,7 +196,7 @@ router.post("/auth_register", async function(req,res,next){
             errorCheck.password_length[0] = 1;
         }
 
-        console.log(errorCheck)
+        
         let errArr = [];
         //CHECKING IF ANY ERROR = 1
         for (let key in errorCheck){
@@ -262,10 +263,10 @@ router.post("/auth_register", async function(req,res,next){
 })
 router.post("/auth_req_change_password", async function(req,res,next){
     try{
-        // const email = xssFilters.inHTMLData(req.body.email);
+        const email = xssFilters.inHTMLData(req.body.email);
         
-        let email ='vincentius.ronalto.d@gmail.com';
-        console.log(email)
+        // let email ='vincentius.ronalto.d@gmail.com';
+        
         //CHECK EMAIL
         const dbCheckEmail = await db.query('SELECT id FROM users WHERE email = $1', [email]);
         
@@ -315,7 +316,7 @@ router.post("/auth_req_change_password", async function(req,res,next){
             
             //SEND EMAIL
             const sendEmail = await sendemail(data);
-            console.log(sendEmail)
+            
             if(sendEmail){
                 req.session.passResetOk =  true;
                 
@@ -333,7 +334,7 @@ router.post("/auth_req_change_password", async function(req,res,next){
                 })
             }
         }else{
-            console.log('here')
+            
             res.send({
                 success  : false
                 
@@ -534,7 +535,7 @@ router.post("/create_new_password", async function(req,res,next){
         let token            = xssFilters.inHTMLData(req.body.token);
 
 
-        console.log(password,confirm_password,token)
+        
 
         if(password.length < 7){
         res.send({
@@ -563,7 +564,7 @@ router.post("/create_new_password", async function(req,res,next){
         //get token from database
         //check if token2(back is same && not expired)
         const dbGetToken = await db.query('SELECT id, token_hash, token_check, user_id, available FROM token_request WHERE token_check = $1 AND expiration_date > NOW()', [token_check]);
-            console.log(token_check)
+            
         let checker = dbGetToken.rows.length;
 
         if(checker == 0){
@@ -585,7 +586,7 @@ router.post("/create_new_password", async function(req,res,next){
 
 
 
-        console.log(token_hash, dbGetToken.rows[0].token_hash, hashMatch)
+        
         if(!available){
         res.send({
         success  : false,

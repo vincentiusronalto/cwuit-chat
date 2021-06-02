@@ -103,7 +103,7 @@
             `
             <a class="profile_single_wrapper" href="https://en.wikipedia.org/wiki/${data.cty}" target="_blank">
                 <div><img src="/icon/loc.png" alt="country" class="profile_icon_loc"></div> 
-                <div>${data.cty}</div>
+                <div class="country_color">${data.cty}</div>
             </a>
             `;
         }
@@ -480,7 +480,7 @@
 
             let data = {type:dataType,id:dataId};
             if(MY_ID == '0'){
-                document.getElementById('chat_room_input').innerHTML = '<a href="/login">Please Login to start chatting</a>'
+                document.getElementById('chat_room_input').innerHTML = '<a href="/login" id="please_login">Please Login to start chatting</a>'
             }
             
             document.getElementById('chat_room_input').classList.remove('hide')
@@ -661,6 +661,8 @@ let combinedPrivate = filteredChat.concat(noChat)
         let topicbuild = ``;
         for(let i = 0; i < data.topic.length;  i++){
 
+            let lastchat = sliceToDot(stripper.strip(data.topic[i].lastchat.text));
+
             //unread build
             let unread = data.topic[i].unread_count;
             let unread_build = ``;
@@ -679,7 +681,7 @@ let combinedPrivate = filteredChat.concat(noChat)
                 <img src="/upload/topic_pic/${data.topic[i].image}" class="profile_pic_small">
                 <div class="chat_selector_content">
                     <div>${data.topic[i].name}</div>
-                    <div class="chat_selector_history_chat"><span class="chat_selection_name_blue">${data.topic[i].lastchat.name}</span> : ${data.topic[i].lastchat.text}</div>
+                    <div class="chat_selector_history_chat"><span class="chat_selection_name_blue">${data.topic[i].lastchat.name}</span> : ${lastchat}</div>
                 </div>
                 ${unread_build}
             </div>
@@ -1231,6 +1233,7 @@ let combinedPrivate = filteredChat.concat(noChat)
         changeContent.textContent = chatClean;
 
 
+
         // START DOT check if not self message and not active mesage
         if(data.uid != MY_ID){
 
@@ -1273,9 +1276,9 @@ let combinedPrivate = filteredChat.concat(noChat)
         //change content
         //<div class="chat_selector_history_chat">${data.topic[i].lastchat.name} : ${data.topic[i].lastchat.text}</div>
         let changeContent = document.querySelector(`.chat_selector_single[data-type="topic"][data-id="${data.ctopicId}"] .chat_selector_history_chat`)
-        
+        let chatClean = sliceToDot(stripper.strip(data.ctext));
 
-        changeContent.textContent = data.uname +' : '+ data.ctext;
+        changeContent.textContent = data.uname +' : '+ chatClean;
 
         if(data.uid != MY_ID){
         //check current chat active

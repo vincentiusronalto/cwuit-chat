@@ -1,8 +1,16 @@
-
+#please_login{
+    color: white;
+}
+.country_color{
+    color: white;
+}
+#logo_right{
+    color: white;
+}
 /* DARK LOADDER */
 .loader{
     padding: 20px;
-    background: #313236;}
+    background: var(--darkbackground);}
     
 .loader-shimmer {
     -webkit-animation-duration: 1s;
@@ -19,7 +27,7 @@
 }
 
 .loader-shimmer div {
-    background: #313236;
+    background: var(--darkbackground);
     height: 6px;
     left: 0;
     position: absolute;
@@ -32,16 +40,16 @@
 body{
     color: white !important;
     /* background: rgb(30,31,33) !important; */
-    background: #313236 !important;
+    background: var(--darkbackground) !important;
 }
 input[type="text"]{
     border: 1px solid rgb(68,68,68);
-    background: #313236 !important;
+    background: var(--darkbackground) !important;
     color: white;
 }
 
 #profile_right_wrapper, #chat_topic{
-    background: #313236 !important;
+    background: var(--darkbackground) !important;
 }
 .profile_icon_loc{
     color: white !important;
@@ -52,18 +60,18 @@ input[type="text"]{
 #logo_right, 
 .chat_content_single,
 #profile_header{
-    border-bottom: 1px solid rgb(68,68,68);
+    border-bottom: 1px solid var(--darkborder);
     /* border-bottom: 1px solid #656871; */
 }
 
 
 #chat_topic{
-    border-right: 1px solid rgb(68,68,68);
+    border-right: 1px solid var(--darkborder);
     /* border-right: 1px solid #656871; */
 }
 
 #profile_right_wrapper{
-    border-left: 1px solid rgb(68,68,68);
+    border-left: 1px solid var(--darkborder);
     /* border-left: 1px solid #656871; */
 }
 
@@ -74,9 +82,12 @@ input[type="text"]{
 .chat_selector_single_active{
     background: #3d3e44;   
 }
+.chat_beginning{
+    border-bottom: 1px solid var(--darkborder);
+}
 
 #chat_room_input_box{
-    border: 1px solid rgb(68,68,68);
+    border: 1px solid var(--darkborder);
 }
 
 #chat_preview_images{

@@ -1,52 +1,65 @@
-body{
-    
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
+h1,h2{
+    margin: 0;
+    font-weight:normal;
+}
+body{    
     margin: 0;
     padding: 0;
-    background: #EEF2F7;
-    font-family: 'Roboto';
-    
-
+    /* background: #EEF2F7; */
+    background: white;
+    font-family: 'Montserrat', sans-serif;
     background: url("/icon/mountain.png") no-repeat center center fixed; 
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-    /* background-image: url("/test/background.png"); */
+    /* background: url("/icon/white.jpeg") no-repeat center center fixed;  */
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 a{
     text-decoration: none;
     color: #6bb5f7;
 }
-h1{
-    font-family: 'Bangers', cursive;
-    color: rgb(246,76,114);
+#logo{
+
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 25px;
+
 }
 
-h2{
-    font-size: 20px;
-}
 
-h1,h2{
-    margin: 0;
-    margin-bottom: 10px;
-}
 /* AUTH PAGES */
 #auth_ejs_wrapper{  
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    /* height: 100vh; */
+    position: fixed;
+    height: 100%;
+    top: 0;
+    
 }
 
-#auth_ejs{
+ #auth_ejs{
+  /* background: rgba(255,255,255,0.9); */
   background: white;
-  height: 420px;
+  height: 480px;
   box-sizing: border-box;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 2.8px 2.2px rgb(0 0 0 / 3%), 0 6.7px 5.3px rgb(0 0 0 / 5%), 0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 12%);
-}
+  /* box-shadow: 0 2.8px 2.2px rgb(0 0 0 / 3%), 0 6.7px 5.3px rgb(0 0 0 / 5%),
+   0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 
+   0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 12%); */
+   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+   position: relative;
+} 
 
 
 #auth_info_link_wrapper{
@@ -81,7 +94,7 @@ h1,h2{
 
 .auth_single_wrapper{
     display: none;
-    width: 250px;
+    
 }
 
 .auth_single_active{
@@ -99,7 +112,9 @@ h1,h2{
     font-size: 16px;
     display: flex;
     justify-content: center;
-    min-height: 230px;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
     
 }
 .nav_pro_text{
@@ -120,7 +135,7 @@ h1,h2{
     margin-left: 10px;
     cursor: pointer;
     font-size: 16px;
-    font-family: 'Roboto';
+    
 }
 
 .auth_single_link:last-child{
@@ -141,15 +156,18 @@ h1,h2{
 
 .auth_submit_btn{
     padding: 10px;
-    background: #1e90ff;
-    color: white;
+    /* background: #1e90ff; */
+    color: #6bb5f7;
     cursor: pointer;
     text-align: center;
     margin-top: 10px;
+    border-radius: 3px;
+    border: 1px solid #6bb5f7;
 }
 
 #auth_confirm{
-    margin-top: 5px;
+    margin-top: 20px;
+
 }
 
 .success{
@@ -157,5 +175,8 @@ h1,h2{
 }
 
 .failed{
-    color: red;
+    /* color: red; */
+    color: #ff6b81;
+    font-family: 'Raleway';
+    
 }

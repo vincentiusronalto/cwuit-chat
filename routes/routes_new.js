@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
 const logger = require('../lib/logger.js');
+const path = require('path');
+const fs = require('fs');
 async function ifLoggedIn(req,res,next){
     try{
     if(req.session.uid){
@@ -80,6 +82,38 @@ router.get("/chat", ifLoggedIn, async function(req,res,next){
     
     res.render('index',{link:'chat', csrf:req.csrfToken()});
 });
+router.get("/blog", ifLoggedIn, async function(req,res,next){
+    let dir = path.join(__dirname, '../public/blog');
+    // fs.readdir(dir, function (err, files) {
+    //     //handling error
+    //     res.locals.blogs = [];
+    //     if (err) {
+    //         return console.log('Unable to scan directory: ' + err);
+    //     } 
+    //     //listing all files using forEach
+    //     files.forEach(function (file) {
+    //         // Do whatever you want to do with the file
+    //         console.log(file);
+    //         res.locals.blogs.push(file);
+    //     });
+        
+    //     res.render('blog',{link:'chat', csrf:req.csrfToken()});
+    // });
+
+    fs.readFile('student.json', (err, data) => {
+        if (err) throw err;
+        let student = JSON.parse(data);
+        console.log(student);
+    });
+    
+    
+});
+router.get("/blog/:title", ifLoggedIn, async function(req,res,next){
+    
+    res.render('index',{link:'chat', csrf:req.csrfToken()});
+});
+
+
 // router.get("/u/:username", ifLoggedIn,async function(req,res,next){
     
 //     res.render('index',{link:'profile', csrf:req.csrfToken()});

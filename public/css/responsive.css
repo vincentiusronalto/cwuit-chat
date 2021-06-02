@@ -51,6 +51,19 @@
         height: 100vh;
         z-index: 5;
     }
+    
+    
+    body{
+        height: 100%;
+    }
+    #wrapper_all{
+        height: 100%;
+    }
+    #wrapper_inside{
+        position: fixed;
+        height: 100%;
+        top: 0;
+    }
   }
 
 

@@ -63,14 +63,12 @@
         font-family: 'Roboto';
         /* background: #dfe4ea; */
         background: white;
-       
-
     }
+    
     #wrapper_all{
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
     }
 
     #wrapper_inside{
@@ -140,7 +138,7 @@
 
     .chat_beginning{
         padding: 10px;
-        font-size: 20px;
+        font-size: 16px;
         text-align: center;
         font-family: 'Raleway',Arial, Helvetica, sans-serif;
         border-bottom: 1px solid rgb(235,235,235);
@@ -418,11 +416,18 @@
         box-sizing: border-box;
         flex-grow: 1;
         font-family: 'Raleway';
+        line-height: 1.6;
     }
 
 .profile_single_wrapper{
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+#please_login{
+    width: 100%;
+    text-align: center;
 }
 
 #profile_bio_wrapper{
@@ -552,7 +557,7 @@
     cursor: pointer;
     box-sizing: border-box;
     display: block;
-    padding: 10px;
+    padding: 6.5px;
 }
 
 #signin_btn{
@@ -560,7 +565,7 @@
     margin: 0  auto;
     margin-top: 20px;
     box-sizing: border-box;
-    border: 1px solid rgb(235,235,235);
+    /* border: 1px solid rgb(235,235,235); */
     padding: 7px;
     color: white;
     cursor: pointer;

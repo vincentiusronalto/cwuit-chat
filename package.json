@@ -38,6 +38,7 @@
     "node-cron": "^3.0.0",
     "node-fetch": "^2.6.1",
     "passport": "^0.4.1",
+    "path": "^0.12.7",
     "paypal-rest-sdk": "^1.8.1",
     "pg": "^8.5.1",
     "pngquant": "^4.0.0",
