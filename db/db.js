@@ -5,14 +5,14 @@ let poolObj;
 
 
     poolObj = {
-        "host" : "207.246.95.250",
-        "port" : 5432,
-        "user" : "vincdb",
-        "password" : "jojon123",
-        "database" : "cwuit_new2",
-        "max" : 100,
-        "connectionTimeoutMillis" : 30000,
-        "idleTimeoutMillis" : 3000
+        "host" : process.env.HOST,
+        "port" : process.env.PORT,
+        "user" : process.env.USER,
+        "password" : process.env.DB_PASSWORD,
+        "database" : process.env.DB_DATABASE,
+        "max" : process.env.MAX,
+        "connectionTimeoutMillis" : process.env.DB_TIMEOUT,
+        "idleTimeoutMillis" : process.env.DB_IDLE
     }
 
 const pool = new Pool(poolObj);

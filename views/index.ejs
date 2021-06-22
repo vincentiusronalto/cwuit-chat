@@ -37,12 +37,12 @@
         <div id="wrapper_inside">
             <div id="responsive_black_modal" class="hide"></div>
                 <!-- chat -->
-        <div class="single_content hide"  data-link="chat">
+        <div class="single_content"  data-link="chat">
             <div id="chat_topic">   
                 <div id="chat_topic_selection">
-                    <div id="logo_right">
+                    <a id="logo_right" href="/">
                         Cwuit
-                    </div>
+                    </a>
 
                     <div id="chat_topic_wrapper">
                         <!-- <img src="/test/loading.gif" alt="chat" id="illustration_loading"> -->
@@ -96,13 +96,14 @@
                         
                         <div>
                             <h1>Welcome to cwuit.com online chat</h1>
-                            <h2>Thanks so much for joining!~</h2>
+                            
                             <%if (locals.ifLogin == false) { %>
+                                <h2>Create your account today to start chatting!~</h2>
                                 <a id="sign_btn" href="/login">
                                     Sign In
                                 </a>
                                 <% } else { %>
-                                    <h2>Select Left Menu to start chatting...</h2>
+                                    <h2>Click the Left Menu to start chatting!~</h2>
                                 <% } %>
                         </div>
                         

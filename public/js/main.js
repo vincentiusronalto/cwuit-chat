@@ -95,7 +95,7 @@
 
     function initProfile(data){
         
-        
+        console.log(data)
         //location build
         let loc = '';
         if(data.cty){
@@ -404,6 +404,7 @@
 
 
     function G_dateFormat(dateInput){
+        console.log(dateInput)
         let isoDate = new Date(dateInput).toISOString();
         let dInputObj = new Date(isoDate);
         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -446,7 +447,7 @@
     //init
     var pathArray = window.location.pathname.split('/');
     var linkName = pathArray[1];
-    showContentFirst(linkName)
+    // showContentFirst(linkName)
 
     document.addEventListener('click', function(e){
         if(e.target.closest('#sign_btn')){

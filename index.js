@@ -7,12 +7,7 @@ require('dotenv').config();
 
 //csurf-cookie-bodyparser
 const cookieParser = require('cookie-parser')
-
 const csrf = require('csurf')
-// const bodyParser = require('body-parser')
-//https://stackoverflow.com/questions/24330014/bodyparser-is-deprecated-express-4
-// app.use(bodyParser.urlencoded({extended: false}));
-// app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -29,36 +24,32 @@ let redisClient = redis.createClient();
 
 const session = Session({
     store: new RedisStore({ client: redisClient }),
-    secret: 'thisisverysecretpasswordoftheyear',  //keyboard cat
+    secret: PROCESS.ENV.SESSION_SECRET,  //keyboard cat
     resave: false,
     saveUninitialized : false
 });
 
 app.use(session)
-
-
-
-// ROUTES
-
-// app.use(require('./routes/routes_app'));
 app.use(require('./routes/routes_login'));
-// app.use(require('./routes/routes_main'));
 app.use(require('./routes/routes_new'));
-
-// VIEWS
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.get("*",async function(req,res,next){
+    res.status(404).render('notfound');
+});
 
 const server = require('http').Server(app);
 
-let localIP = '192.168.100.4';
-// server.listen('3000', 'localhost',() => {
-//     console.log("Listening on port: 3000");
-// });
 
-server.listen('3000', localIP || 'localhost',() => {
-      console.log("Listening on local ip:3000");
+
+server.listen('3000', 'localhost',() => {
+    console.log("Listening on port: 3000");
 });
+
+//if want to run server with shared local wifi
+// server.listen('3000', process.env.LOCAL_IP || 'localhost',() => {
+//       console.log("Listening on local ip:3000");
+// });
 
 
 

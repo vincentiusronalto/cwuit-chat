@@ -41,7 +41,7 @@ router.post("/auth_login",async function(req,res,next){
         let loginErr = '';
 
         //get username-email 
-        const username_email       = xssFilters.inHTMLData(req.body.uname_email);
+        const username_email       = (xssFilters.inHTMLData(req.body.uname_email)).toLowerCase();
         const password             = xssFilters.inHTMLData(req.body.password);
         
         req.session.username_email = username_email;
