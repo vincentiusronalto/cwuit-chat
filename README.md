@@ -9,7 +9,4 @@ backend:
 node, express, socketio, postgresql
 
 third party api:
-maigun, paypal
-
-deployed on:
-VULTR VPS 
+maigun
